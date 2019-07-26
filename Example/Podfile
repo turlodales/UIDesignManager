@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'UIDesignManager_Example' do
+  pod 'UIDesignManager', :path => '../'
+
+  target 'UIDesignManager_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
