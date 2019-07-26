@@ -43,24 +43,24 @@
 		1562CE73C90436B3B97D79B0D79899A7 /* Pods-UIDesignManager_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-UIDesignManager_Example-dummy.m"; sourceTree = "<group>"; };
 		1D8836A286C58468BD729F5D08B61363 /* Pods-UIDesignManager_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-UIDesignManager_Example.release.xcconfig"; sourceTree = "<group>"; };
 		1DA91B0567E5EEBABB9141913C6DEC48 /* Pods-UIDesignManager_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-UIDesignManager_Tests-dummy.m"; sourceTree = "<group>"; };
-		29A838BBC53DF50945FCDB661631C06A /* UIDesignManager.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; path = UIDesignManager.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		29A838BBC53DF50945FCDB661631C06A /* UIDesignManager.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; path = UIDesignManager.podspec; sourceTree = "<group>"; };
 		29D1BA463C106ACCBF0F989379D2B44F /* Pods-UIDesignManager_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-UIDesignManager_Example.modulemap"; sourceTree = "<group>"; };
-		2BBD150BF2FA2F7DE32992704E31D9E5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
+		2BBD150BF2FA2F7DE32992704E31D9E5 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		32F44F5888171EA5A02EF33FD564B47B /* Pods-UIDesignManager_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-UIDesignManager_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		3BCF041355258B813B8B1EBA30016206 /* UIDesignManager.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = UIDesignManager.xcconfig; sourceTree = "<group>"; };
 		3F9796BCBD6D608FF38A3AEDB636F08A /* Pods-UIDesignManager_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-UIDesignManager_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		43D8CAF6672C19CFC3578001D236B23A /* Pods-UIDesignManager_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-UIDesignManager_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		4CEB02CE6C17E1B81947291BF761491E /* Pods-UIDesignManager_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Example-frameworks.sh"; sourceTree = "<group>"; };
 		5BCDCEB32AACC6AEF52E2FCE70FF8D78 /* UIDesignManager-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIDesignManager-dummy.m"; sourceTree = "<group>"; };
-		7F15944187208D9819316E66E201B5BB /* Pods_UIDesignManager_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_UIDesignManager_Example.framework; path = "Pods-UIDesignManager_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F15944187208D9819316E66E201B5BB /* Pods_UIDesignManager_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UIDesignManager_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83B4E454E5572A0244D1927ACFEF2DC1 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		931A2AAF3F92004C2E9B122CAF502C6F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A026444B3EBEE82B7B4ECACE8BDED99C /* Pods_UIDesignManager_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_UIDesignManager_Tests.framework; path = "Pods-UIDesignManager_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		931A2AAF3F92004C2E9B122CAF502C6F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A026444B3EBEE82B7B4ECACE8BDED99C /* Pods_UIDesignManager_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UIDesignManager_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A47257CD79546512E12758B90F55A40B /* Pods-UIDesignManager_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-UIDesignManager_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		AE27223C58A41A6395941FFE70DE4FF6 /* Pods-UIDesignManager_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-UIDesignManager_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B5487F450DD84E86E2E93A001B3BF884 /* Pods-UIDesignManager_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-UIDesignManager_Tests-umbrella.h"; sourceTree = "<group>"; };
-		B5A545E7B6C262D4DDB2B0B96BBF102C /* UIDesignManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = UIDesignManager.framework; path = UIDesignManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5A545E7B6C262D4DDB2B0B96BBF102C /* UIDesignManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UIDesignManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9EB46D923AA82AF62E83F5F4B4657CF /* UIDesignManager-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIDesignManager-umbrella.h"; sourceTree = "<group>"; };
 		D126B8F9ECCFF2CDB55639CE76A3E182 /* Pods-UIDesignManager_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-UIDesignManager_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D295D9F9EE6E009A99DE756380A869FB /* UIDesignManager.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = UIDesignManager.modulemap; sourceTree = "<group>"; };
@@ -327,6 +327,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
@@ -597,8 +598,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.2;
 				SYMROOT = "${SRCROOT}/../build";
 			};
