@@ -1,0 +1,16 @@
+PODS:
+  - UIDesignManager (0.1.0)
+
+DEPENDENCIES:
+  - UIDesignManager (from `../`)
+
+EXTERNAL SOURCES:
+  UIDesignManager:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  UIDesignManager: 67dfc6bdd30f6794580d7a10c5b8c5b86ad5e7f7
+
+PODFILE CHECKSUM: f9c950c5587a65cb577d8d4de2b202df5971fad7
+
+COCOAPODS: 1.5.3

@@ -1,0 +1,6 @@
+framework module UIDesignManager {
+  umbrella header "UIDesignManager-umbrella.h"
+
+  export *
+  module * { export * }
+}

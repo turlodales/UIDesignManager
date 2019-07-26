@@ -1,0 +1,22 @@
+{
+  "name": "UIDesignManager",
+  "version": "0.1.0",
+  "summary": "A short description of UIDesignManager.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ben.swift@zivato.com/UIDesignManager",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "ben.swift@zivato.com": "=ben.swift@zivato.com"
+  },
+  "source": {
+    "git": "https://github.com/ben.swift@zivato.com/UIDesignManager.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "UIDesignManager/Classes/**/*"
+}
