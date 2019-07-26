@@ -69,7 +69,7 @@
 		E55501042C94F86695DCD1A654DF5F95 /* Pods-UIDesignManager_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-UIDesignManager_Example-umbrella.h"; sourceTree = "<group>"; };
 		EA97503FF8466BC065B7BBFB49A3B4CD /* Pods-UIDesignManager_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Tests-resources.sh"; sourceTree = "<group>"; };
 		EAB99C4491F89766F05241C9A9C62A1C /* Pods-UIDesignManager_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-UIDesignManager_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = UIDesignManager/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
+		F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReplaceMe.swift; sourceTree = "<group>"; };
 		F7577F81CAFFF81B82906B358D961CF4 /* Pods-UIDesignManager_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		FDE050AB0590800A0BB666667A6DC1BD /* Pods-UIDesignManager_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Example-resources.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,7 +141,7 @@
 		595829919557CF2ADA5C21A90EDC9ECA /* UIDesignManager */ = {
 			isa = PBXGroup;
 			children = (
-				F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */,
+				909D7B2522EBC32B0070AA03 /* Source */,
 				C3FD4077E631AB1933E4C94D95AF48B7 /* Pod */,
 				F6101653E7E8099B3CF6A074892C76DE /* Support Files */,
 			);
@@ -176,6 +176,14 @@
 			);
 			name = "Pods-UIDesignManager_Tests";
 			path = "Target Support Files/Pods-UIDesignManager_Tests";
+			sourceTree = "<group>";
+		};
+		909D7B2522EBC32B0070AA03 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */,
+			);
+			path = Source;
 			sourceTree = "<group>";
 		};
 		AE683F7376D329FB9AB1AB7E9DBC4CB1 /* Targets Support Files */ = {

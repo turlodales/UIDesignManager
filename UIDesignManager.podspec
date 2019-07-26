@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UIDesignManager'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Manage your UI Remotely'
 
 # This description is used to generate tags and improve search results.
@@ -21,26 +21,27 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/ben.swift@zivato.com/UIDesignManager'
+  s.homepage         = 'https://github.com/UIDesignManager'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'ben.swift@zivato.com' => '=ben.swift@zivato.com' }
-  s.source           = { :git => 'https://github.com/ben.swift@zivato.com/UIDesignManager.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/UIDesignManager.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '12.0'
   s.swift_version = '5.0'
-  s.platforms = {
-    "ios" : "12.0"
-  }
-
-  s.source_files = 'UIDesignManager/Classes/**/*'
+s.platforms = {
+"ios": "12.0"
+}
   
-  s.resource_bundles = {
-     'UIDesignManager' => ['UIDesignManager/Assets/*.png']
-   }
 
-   s.public_header_files = 'Pod/Classes/**/*.h'
+  s.source_files = 'Source/**/*'
+  
+# s.resource_bundles = {
+#      'UIDesignManager' => ['UIDesignManager/Assets/*.png']
+#    }
+
+# s.public_header_files = 'Pod/Source/**/*.h'
    s.frameworks = 'UIKit', 'MapKit'
    s.dependency 'AFNetworking', '~> 2.3'
 end
