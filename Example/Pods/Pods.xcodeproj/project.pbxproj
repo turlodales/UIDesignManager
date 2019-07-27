@@ -183,9 +183,17 @@
 		909D7B2522EBC32B0070AA03 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				909D7B2C22EC60650070AA03 /* ViewController.swift */,
+				909D7B3122EC874A0070AA03 /* UIViews */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		909D7B3122EC874A0070AA03 /* UIViews */ = {
+			isa = PBXGroup;
+			children = (
+				909D7B2C22EC60650070AA03 /* ViewController.swift */,
+			);
+			path = UIViews;
 			sourceTree = "<group>";
 		};
 		AE683F7376D329FB9AB1AB7E9DBC4CB1 /* Targets Support Files */ = {
