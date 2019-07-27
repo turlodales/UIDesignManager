@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C166BB7B94F966B103CCFFB8109F16C /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */; };
 		235078136A91178AA92CD6659187689B /* UIDesignManager-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BCDCEB32AACC6AEF52E2FCE70FF8D78 /* UIDesignManager-dummy.m */; };
 		30B615104939501805F4F0251FF8204D /* UIDesignManager-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C9EB46D923AA82AF62E83F5F4B4657CF /* UIDesignManager-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3941CF3F8773FA99B89DC25DC72777D6 /* Pods-UIDesignManager_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DA91B0567E5EEBABB9141913C6DEC48 /* Pods-UIDesignManager_Tests-dummy.m */; };
@@ -69,7 +68,6 @@
 		E55501042C94F86695DCD1A654DF5F95 /* Pods-UIDesignManager_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-UIDesignManager_Example-umbrella.h"; sourceTree = "<group>"; };
 		EA97503FF8466BC065B7BBFB49A3B4CD /* Pods-UIDesignManager_Tests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Tests-resources.sh"; sourceTree = "<group>"; };
 		EAB99C4491F89766F05241C9A9C62A1C /* Pods-UIDesignManager_Example-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-UIDesignManager_Example-acknowledgements.markdown"; sourceTree = "<group>"; };
-		F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ReplaceMe.swift; sourceTree = "<group>"; };
 		F7577F81CAFFF81B82906B358D961CF4 /* Pods-UIDesignManager_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		FDE050AB0590800A0BB666667A6DC1BD /* Pods-UIDesignManager_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-UIDesignManager_Example-resources.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -181,9 +179,40 @@
 		909D7B2522EBC32B0070AA03 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				F73121EF877E59A091F94C921D0CE56B /* ReplaceMe.swift */,
+				909D7B2822EBD1670070AA03 /* Resources */,
+				909D7B2722EBD1530070AA03 /* Views */,
+				909D7B2922EBD1A80070AA03 /* Support Files */,
+				909D7B2622EBD1430070AA03 /* Controllers */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		909D7B2622EBD1430070AA03 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		909D7B2722EBD1530070AA03 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		909D7B2822EBD1670070AA03 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		909D7B2922EBD1A80070AA03 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Support Files";
 			sourceTree = "<group>";
 		};
 		AE683F7376D329FB9AB1AB7E9DBC4CB1 /* Targets Support Files */ = {
@@ -387,7 +416,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C166BB7B94F966B103CCFFB8109F16C /* ReplaceMe.swift in Sources */,
 				235078136A91178AA92CD6659187689B /* UIDesignManager-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
