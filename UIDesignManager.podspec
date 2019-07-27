@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UIDesignManager'
-  s.version          = '0.1.3'
+  s.version          = '0.1.4'
   s.summary          = 'Manage your UI Remotely'
 
 # This description is used to generate tags and improve search results.
@@ -35,7 +35,7 @@ s.platforms = {
 }
   
 
-  s.source_files = 'Source/**/*'
+ s.source_files = 'Source/**/*.swift'
   
 # s.resource_bundles = {
 #      'UIDesignManager' => ['UIDesignManager/Assets/*.png']
