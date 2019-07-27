@@ -181,41 +181,9 @@
 		909D7B2522EBC32B0070AA03 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				909D7B2822EBD1670070AA03 /* Resources */,
-				909D7B2722EBD1530070AA03 /* Views */,
-				909D7B2922EBD1A80070AA03 /* Support Files */,
-				909D7B2622EBD1430070AA03 /* Controllers */,
-			);
-			path = Source;
-			sourceTree = "<group>";
-		};
-		909D7B2622EBD1430070AA03 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
-		909D7B2722EBD1530070AA03 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		909D7B2822EBD1670070AA03 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
 				909D7B2A22EBDBF30070AA03 /* File.swift */,
 			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		909D7B2922EBD1A80070AA03 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Support Files";
+			path = Source;
 			sourceTree = "<group>";
 		};
 		AE683F7376D329FB9AB1AB7E9DBC4CB1 /* Targets Support Files */ = {
