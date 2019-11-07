@@ -18,7 +18,9 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 Set full parameters for your UI components. NOTE: Using this full parameter method in conjunction with the color parameter method is not advisable.
         
-Constraints: set constraints programatically within the configure method. All parameters can be changed later via the UIDesigner iOS app
+Constraints: set constraints programatically within the configure method. All parameters can be changed later via the UIDesigner iOS app.
+
+NOTE: All updated UI parameters are saved on device which ensures smooth fast rendering.
 
 ## UIView initialize full parameter setup:
 
