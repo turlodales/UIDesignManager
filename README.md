@@ -14,6 +14,17 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+## Usage
+
+UIView initialize full parameter setup:
+
+```ruby
+let customView = ZUIView()
+self.view.addSubview(customView)
+            
+customView.configure(name: "home_background", source: self, sourceParent: self.view, left: 0.0, right: 0.0, top: 0.0, bottom: 0.0, fixedWidth: nil, fixedHeight: nil, centerX: false, centerY: false)
+```
+
 ## Installation
 
 UIDesignManager is available through [CocoaPods](https://cocoapods.org). To install
