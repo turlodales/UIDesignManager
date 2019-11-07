@@ -29,6 +29,8 @@ let customView = ZUIView()
 self.view.addSubview(customView)
             
 customView.configure(name: "home_background", source: self, sourceParent: self.view, left: 0.0, right: 0.0, top: 0.0, bottom: 0.0, fixedWidth: nil, fixedHeight: nil, centerX: false, centerY: false)
+# This will act as a fallback configuration if switched to inactive in the UIDesigner app
+
 ```
 
 ## UIImageView initialize full parameter setup:
@@ -38,6 +40,8 @@ let customImage = ZUIImageView()
 self.view.addSubview(customImage)
 
 customImage.configure(name: "home_image", source: self, sourceParent: self.view, left: 60.0, right: 60.0, top: nil, bottom: 110.0, fixedWidth: nil, fixedHeight: 150, centerX: false, centerY: false, fallbackImage: "YOUR_IMAGE")
+# This will act as a fallback configuration if switched to inactive in the UIDesigner app
+
 ```
 
 ## UITextView initialize full parameter setup:
@@ -49,6 +53,8 @@ customTextView.isEditable = false
 self.view.addSubview(customTextView)
         
 customTextView.configure(name: "home_textview", source: self, sourceParent: self.view, left: 40, right: 40, top: 180, bottom: 40, fixedWidth: nil, fixedHeight: nil, centerX: false, centerY: false)
+# This will act as a fallback configuration if switched to inactive in the UIDesigner app
+
 ```
 
 ## UILabel initialize full parameter setup:
@@ -59,6 +65,8 @@ customLabel.text = "HEADER"
 self.view.addSubview(customLabel)
         
 customLabel.configure(name: "home_header", source: self, sourceParent: self.view, left: 40, right: 40, top: 40, bottom: nil, fixedWidth: nil, fixedHeight: 100.0, centerX: false, centerY: false)
+# This will act as a fallback configuration if switched to inactive in the UIDesigner app
+
 ```
 
 ## UIButton initialize full parameter setup:
@@ -67,8 +75,10 @@ customLabel.configure(name: "home_header", source: self, sourceParent: self.view
 let customButton = ZUIButton()
 customButton.setTitle("HELLO", for: .normal)
 self.view.addSubview(customButton)
-        
+
 customButton.configure(name: "home_button", source: self, sourceParent: self.view, left: 40, right: 40, top: nil, bottom: 40, fixedWidth: nil, fixedHeight: 50.0, centerX: false, centerY: false)
+# This will act as a fallback configuration if switched to inactive in the UIDesigner app
+
 ```
 
 ## Colors
@@ -85,8 +95,8 @@ Set name: property with a key name. NOTE: You can reuse the same name in multipl
 let colorView = UIView(frame: view.bounds)
 self.view.addSubview(colorView)
 
+# UIView background color
 setUIViewColor(name: "primary_color", source: self, initialColor: UIColor.red, view: colorView)
-# This method prints the sum of its arguments
 ```
 
 ## UILabel set color:
@@ -95,8 +105,10 @@ setUIViewColor(name: "primary_color", source: self, initialColor: UIColor.red, v
 let lbl = UILabel(frame: view.bounds)
 self.view.addSubview(lbl)
 
+# UILabel background color
 setUILabelBgColor(name: "std_label_bg_color", source: self, initialColor: UIColor.lightGray, view: lbl)
-        
+
+# UILabel text color
 setUILabelTextColor(name: "std_label_text_color", source: self, initialColor: UIColor.white, view: lbl)
 ```
 
@@ -106,6 +118,7 @@ setUILabelTextColor(name: "std_label_text_color", source: self, initialColor: UI
 let img = UIImageView(frame: view.bounds)
 self.view.addSubview(img)
 
+# UIImageView background color
 setUIImageViewColor(name: "secondary_color", source: self, initialColor: UIColor.yellow, view: img)
 ```
 
@@ -115,9 +128,11 @@ setUIImageViewColor(name: "secondary_color", source: self, initialColor: UIColor
 let btn = UIButton(frame: view.bounds)
 btn.setTitle("HELLO", for: .normal)
 self.view.addSubview(btn)
-        
+
+# UIButton background color
 setUIButtonBgColor(name: "secondary_color", source: self, initialColor: UIColor.lightGray, view: btn)
-        
+
+# UIButton title color
 setUIButtonTitleColor(name: "std_btn_text_color", source: self, initialColor: UIColor.white, view: btn)
 ```
 
@@ -127,8 +142,10 @@ setUIButtonTitleColor(name: "std_btn_text_color", source: self, initialColor: UI
 let textView = UITextView(frame: view.bounds)
 self.view.addSubview(textView)
 
+# UITextView background color
 setUITextViewBgColor(name: "std_textview_bg_color", source: self, initialColor: UIColor.lightGray, view: textView)
-      
+
+# UITextView text color
 setUITextViewTextColor(name: "std_textview_text_color", source: self, initialColor: UIColor.white, view: textView)
 ```
 
