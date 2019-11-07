@@ -14,6 +14,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+Integrate UIDesignManager with any Swift iOS application that is using UIKit. After your app runs for the first time your initial configurations will be saved and linked to our servers. To manage and control the properties of the individually configured UI components you will need to download the UIDesigner app from the app store. 
+
 ## Usage
 
 Set full parameters for your UI components. NOTE: Using this full parameter method in conjunction with the color parameter method is not advisable.
