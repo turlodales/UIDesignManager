@@ -5,6 +5,8 @@ target 'UIDesignManager_Example' do
 
   target 'UIDesignManager_Tests' do
     inherit! :search_paths
+    
+
 
     
   end
