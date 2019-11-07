@@ -16,7 +16,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Usage
 
-UIView initialize full parameter setup:
+Set full parameters for your UI components. NOTE: Using this full parameter method in conjunction with the color parameter method is not advisable.
+        
+Constraints: set constraints programatically within the configure method. All parameters can be changed later via the UIDesigner iOS app
+
+## UIView initialize full parameter setup:
 
 ```ruby
 let customView = ZUIView()
@@ -25,7 +29,7 @@ self.view.addSubview(customView)
 customView.configure(name: "home_background", source: self, sourceParent: self.view, left: 0.0, right: 0.0, top: 0.0, bottom: 0.0, fixedWidth: nil, fixedHeight: nil, centerX: false, centerY: false)
 ```
 
-UIImageView initialize full parameter setup:
+## UIImageView initialize full parameter setup:
 
 ```ruby
 let customImage = ZUIImageView()
@@ -34,7 +38,7 @@ self.view.addSubview(customImage)
 customImage.configure(name: "home_image", source: self, sourceParent: self.view, left: 60.0, right: 60.0, top: nil, bottom: 110.0, fixedWidth: nil, fixedHeight: 150, centerX: false, centerY: false, fallbackImage: "YOUR_IMAGE")
 ```
 
-UITextView initialize full parameter setup:
+## UITextView initialize full parameter setup:
 
 ```ruby
 let customTextView = ZUITextView()
@@ -45,7 +49,7 @@ self.view.addSubview(customTextView)
 customTextView.configure(name: "home_textview", source: self, sourceParent: self.view, left: 40, right: 40, top: 180, bottom: 40, fixedWidth: nil, fixedHeight: nil, centerX: false, centerY: false)
 ```
 
-UILabel initialize full parameter setup:
+## UILabel initialize full parameter setup:
 
 ```ruby
 let customLabel = ZUILabel()
@@ -55,7 +59,7 @@ self.view.addSubview(customLabel)
 customLabel.configure(name: "home_header", source: self, sourceParent: self.view, left: 40, right: 40, top: 40, bottom: nil, fixedWidth: nil, fixedHeight: 100.0, centerX: false, centerY: false)
 ```
 
-UIButton initialize full parameter setup:
+## UIButton initialize full parameter setup:
 
 ```ruby
 let customButton = ZUIButton()
@@ -63,6 +67,67 @@ customButton.setTitle("HELLO", for: .normal)
 self.view.addSubview(customButton)
         
 customButton.configure(name: "home_button", source: self, sourceParent: self.view, left: 40, right: 40, top: nil, bottom: 40, fixedWidth: nil, fixedHeight: 50.0, centerX: false, centerY: false)
+```
+
+## Colors
+
+Set just color parameters for your UI components. NOTE: Using this color method in conjunction with the full parameter method is not advisable.
+        
+Set view: property with the view you wish to configure
+        
+Set name: property with a key name. NOTE: You can reuse the same name in multiple parts of your app. This will make changing colors on the client side much easier. eg: "primary_color" could be used to control colors for all UIButtons and UILabels.
+
+## UIView set color:
+
+```ruby
+let colorView = UIView(frame: view.bounds)
+self.view.addSubview(colorView)
+
+setUIViewColor(name: "primary_color", source: self, initialColor: UIColor.red, view: colorView)
+# This method prints the sum of its arguments
+```
+
+## UILabel set color:
+
+```ruby
+let lbl = UILabel(frame: view.bounds)
+self.view.addSubview(lbl)
+
+setUILabelBgColor(name: "std_label_bg_color", source: self, initialColor: UIColor.lightGray, view: lbl)
+        
+setUILabelTextColor(name: "std_label_text_color", source: self, initialColor: UIColor.white, view: lbl)
+```
+
+## UIImageView set color:
+
+```ruby
+let img = UIImageView(frame: view.bounds)
+self.view.addSubview(img)
+
+setUIImageViewColor(name: "secondary_color", source: self, initialColor: UIColor.yellow, view: img)
+```
+
+## UIButton set color:
+
+```ruby
+let btn = UIButton(frame: view.bounds)
+btn.setTitle("HELLO", for: .normal)
+self.view.addSubview(btn)
+        
+setUIButtonBgColor(name: "secondary_color", source: self, initialColor: UIColor.lightGray, view: btn)
+        
+setUIButtonTitleColor(name: "std_btn_text_color", source: self, initialColor: UIColor.white, view: btn)
+```
+
+## UITextView set color:
+
+```ruby
+let textView = UITextView(frame: view.bounds)
+self.view.addSubview(textView)
+
+setUITextViewBgColor(name: "std_textview_bg_color", source: self, initialColor: UIColor.lightGray, view: textView)
+      
+setUITextViewTextColor(name: "std_textview_text_color", source: self, initialColor: UIColor.white, view: textView)
 ```
 
 ## Installation
