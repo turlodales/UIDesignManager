@@ -17,8 +17,6 @@ class ViewController: UIViewController {
         let customButton = ZUIButton()
         let customTextView = ZUITextView()
         
-        @IBOutlet weak var testView: ZUIView!
-        
         
         override func viewDidLoad() {
             super.viewDidLoad()
