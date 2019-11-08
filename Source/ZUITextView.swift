@@ -1,20 +1,18 @@
-
-
+//
+//  ZUITextView.swift
+//  UIDesignManager
+//
+//  Created by Zivato on 16/09/2019.
+//
 
 import UIKit
 
-
-
 open class ZUITextView: UITextView {
-    //initWithFrame to init view from code
     
     let defaults = UserDefaults.standard
     
-    let appID = "\(Bundle.main.bundleIdentifier!)".replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
-    
     var isVerticallyCentered = false
     var isHorizontallyCentered = false
-    
     
     override init (frame : CGRect, textContainer: NSTextContainer?) {
         super.init(frame : frame, textContainer : nil)
@@ -24,8 +22,6 @@ open class ZUITextView: UITextView {
         }
         
     }
-    
-    
     
     open func configure(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
         
@@ -102,7 +98,7 @@ open class ZUITextView: UITextView {
         var request = URLRequest(url: url)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        let parameters = "appID=\(appID)&name=\(name)"
+        let parameters = "appId=\(appId)&name=\(name)"
         request.httpBody = parameters.data(using: .utf8)
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -262,7 +258,7 @@ open class ZUITextView: UITextView {
                                     textColorString = "clear"
                                 }
                                 
-
+                                
                                 
                                 
                                 
@@ -404,10 +400,6 @@ open class ZUITextView: UITextView {
         
     }
     
-    
-    
-    
-    
     func generateRandomPastelColor(withMixedColor mixColor: UIColor?) -> UIColor {
         // Randomly generate number in closure
         let randomColorGenerator = { ()-> CGFloat in
@@ -431,8 +423,6 @@ open class ZUITextView: UITextView {
         return UIColor(red: red, green: green, blue: blue, alpha: 1)
     }
     
-    
-    
     func uploadData(configuration: String, source: String, type: String, json: [String: Any]) {
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         let jsonString = String(data: jsonData!, encoding: .utf8)!
@@ -440,7 +430,7 @@ open class ZUITextView: UITextView {
         var request = URLRequest(url: url)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        let parameters = "appID=\(appID)&name=\(configuration)&json=\(jsonString)"
+        let parameters = "appId=\(appId)&name=\(configuration)&json=\(jsonString)"
         print("code \(parameters)")
         request.httpBody = parameters.data(using: .utf8)
         let task = URLSession.shared.dataTask(with: request) { data, response, error in

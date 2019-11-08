@@ -9,16 +9,11 @@ import Foundation
 import UIKit
 
 open class ZUIImageView: UIImageView {
-    //initWithFrame to init view from code
     
     let defaults = UserDefaults.standard
     
-    let appID = "\(Bundle.main.bundleIdentifier!)".replacingOccurrences(of: ".", with: "", options: NSString.CompareOptions.literal, range: nil)
-    
     var isHorizontallyCentered = false
     var isVerticallyCentered = false
-    
-    
     
     override init (frame : CGRect) {
         super.init(frame : frame)
@@ -27,7 +22,6 @@ open class ZUIImageView: UIImageView {
             self.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue)
         }
     }
-    
     
     func uploadImage(image: UIImage, name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
         
@@ -39,12 +33,12 @@ open class ZUIImageView: UIImageView {
         
         //if there exists an image, its png data saved to defaults
         if let imageData = image.pngData(){
-            self.defaults.setValue(imageData, forKey: "\(configuration)_id\(self.appID).png")
+            self.defaults.setValue(imageData, forKey: "\(configuration)_id\(appId).png")
         }
         
         //UPLOADING THE IMAGE TO FIREBASE STORAGE
         
-        let url = URL(string: "https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/images%2F+\(configuration)_id\(self.appID).png")
+        let url = URL(string: "https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/images%2F+\(configuration)_id\(appId).png")
         
         // generate boundary string using a unique per-app string
         let boundary = UUID().uuidString
@@ -65,7 +59,7 @@ open class ZUIImageView: UIImageView {
         
         // Add the image data to the raw http request data
         data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"\(configuration)\"; filename=\"\(configuration)_id\(self.appID).png\"\r\n".data(using: .utf8)!)
+        data.append("Content-Disposition: form-data; name=\"\(configuration)\"; filename=\"\(configuration)_id\(appId).png\"\r\n".data(using: .utf8)!)
         
         data.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
         data.append(image.pngData()!)
@@ -81,7 +75,9 @@ open class ZUIImageView: UIImageView {
                     
                     if let token = json["downloadTokens"] as? String {
                         
-                        path = "https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/images%2F%20\(configuration)_id\(self.appID).png?alt=media&token=\(token)"
+                        //https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/
+                        
+                        path = token
                         
                         print("imagePath \(path)")
                         
@@ -132,14 +128,13 @@ open class ZUIImageView: UIImageView {
                             vConstraints = v1 + v2 + v3
                             
                             
-                            
                             json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.layer.cornerRadius, "bgColour":colorString!, "contentMode": contentMode, "imageUrl" : path, "type": "UIImageView", "source":screen, "timestamp":timestamp, "name":configuration, "centerHorizontally": self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered, "active" : true]
                             
                             let jsonData = try? JSONSerialization.data(withJSONObject: json)
                             
                             //saves the config on firebase into defaults
                             self.defaults.setValue(jsonData, forKey: configuration)
-                            //self.setInitial(sourceParent: sourceParent, json: json)
+                            self.setInitial(sourceParent: sourceParent, json: json)
                             self.uploadData(configuration: configuration, source: screen, type: "UIImageViews", json: json)
                         }
                         
@@ -154,8 +149,6 @@ open class ZUIImageView: UIImageView {
         
     }
     
-    
-    
     open func configure(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool, fallbackImage: String) {
         
         let configuration = name
@@ -166,7 +159,7 @@ open class ZUIImageView: UIImageView {
         
         
         
-        if let imgData = defaults.value(forKey: "\(name)_id\(self.appID).png") as? NSData {
+        if let imgData = defaults.value(forKey: "\(name)_id\(appId).png") as? NSData {
             DispatchQueue.main.async {
                 let loadedImage : UIImage = UIImage(data: imgData as Data)!
                 self.image = loadedImage
@@ -254,7 +247,7 @@ open class ZUIImageView: UIImageView {
         var request = URLRequest(url: url)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        let parameters = "appID=\(appID)&name=\(name)"
+        let parameters = "appId=\(appId)&name=\(name)"
         request.httpBody = parameters.data(using: .utf8)
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -336,13 +329,18 @@ open class ZUIImageView: UIImageView {
                                                 
                                                 if let image = jsonData["imageUrl"] as? String{
                                                     DispatchQueue.main.async {
-                                                        
-                                                        let url = URL(string: image)
-                                                        let data = try? Data(contentsOf: url!)
-                                                        
-                                                        self.image = UIImage(data: data!)
-                                                        
-                                                        self.defaults.setValue(data, forKey: "\(configuration)_id\(self.appID).png")
+                                                        if image != ""{
+                                                            let imageUrl  = "https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/images%2F%20\(configuration)_id\(appId).png?alt=media&token=\(image)"
+                                                            let url = URL(string: imageUrl)
+                                                            let data = try? Data(contentsOf: url!)
+                                                            
+                                                            self.image = UIImage(data: data!)
+                                                            
+                                                            self.defaults.setValue(data, forKey: "\(configuration)_id\(appId).png")
+                                                        }else {
+                                                            self.image = nil
+                                                            self.defaults.setValue(data, forKey: "")
+                                                        }
                                                         
                                                     }
                                                 }
@@ -380,8 +378,6 @@ open class ZUIImageView: UIImageView {
         
     }
     
-    
-    
     func revertToStoryboardUI(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool, imageName: String) {
         DispatchQueue.main.async {
             let colorString = self.backgroundColor?.hexString(.d6)
@@ -392,7 +388,7 @@ open class ZUIImageView: UIImageView {
             let timestamp = NSDate().timeIntervalSince1970
             
             let data = self.image!.pngData()
-            self.defaults.setValue(data, forKey: "\(name)_id\(self.appID).png")
+            self.defaults.setValue(data, forKey: "\(name)_id\(appId).png")
             
             
             let screen = String(describing: type(of: source))
@@ -430,7 +426,7 @@ open class ZUIImageView: UIImageView {
             hConstraints = h1 + h2 + h3
             vConstraints = v1 + v2 + v3
             
-       
+            
             json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.layer.cornerRadius, "bgColour":colorString!, "contentMode": contentMode, "imageName" : imageName, "type": "UIImageView", "source":screen, "timestamp":timestamp, "name":name, "centerHorizontally": self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered, "active" : true]
             
             print("2 \(json)")
@@ -463,8 +459,6 @@ open class ZUIImageView: UIImageView {
         
         return UIColor(red: red, green: green, blue: blue, alpha: 1)
     }
-    
-    
     
     func setInitial(sourceParent: UIView, json: [String: Any]) {
         print("handling con")
@@ -533,19 +527,20 @@ open class ZUIImageView: UIImageView {
         
     }
     
-    
-    
-    
     func uploadData(configuration: String, source: String, type: String, json: [String: Any]) {
+        print("passed \(json)")
+        
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
-        let jsonString = String(data: jsonData!, encoding: .utf8)!
+        let jsonStr = String(data: jsonData!, encoding: .utf8)!
+        let jsonString = jsonStr.replacingOccurrences(of: "\\", with: "")
         let url = URL(string: "http://data.uidesignmanager.com/post.php")!
         var request = URLRequest(url: url)
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
-        let parameters = "appID=\(appID)&name=\(configuration)&json=\(jsonString)"
+        let parameters = "appId=\(appId)&name=\(configuration)&json=\(jsonString)"
         print("code \(parameters)")
         request.httpBody = parameters.data(using: .utf8)
+        print("request \(String(describing: request.url))")
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 print(error?.localizedDescription ?? "No data")
@@ -559,7 +554,6 @@ open class ZUIImageView: UIImageView {
         task.resume()
     }
     
-    
     public convenience init() {
         self.init(frame: CGRect.zero)
         
@@ -569,8 +563,6 @@ open class ZUIImageView: UIImageView {
         super.init(coder: aDecoder)
     }
 }
-
-
 
 extension UIColor {
     func image(_ size: CGSize = CGSize(width: 1, height: 1)) -> UIImage {
