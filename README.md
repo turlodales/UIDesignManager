@@ -30,7 +30,7 @@ NOTE: All updated UI parameters are saved on device which ensures smooth fast re
 # // AppDelegate.swift
 
 UIDesignManager.set(passKey: "CHOOSE_YOUR_OWN_PASSKEY")
-# You will need this to login to the UIDesigner app
+# You will need this to login into the UIDesigner app
 ```
 
 ## UIView initialize full parameter setup:
