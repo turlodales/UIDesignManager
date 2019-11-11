@@ -204,7 +204,7 @@ open func configure(name: String, source: UIViewController, sourceParent: UIView
                                                         self.translatesAutoresizingMaskIntoConstraints = false
                                                         sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: hConstraints, options: [], metrics: nil, views: ["self":self]))
                                                         sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: vConstraints, options: [], metrics: nil, views: ["self":self]))
-                                                        
+                                                        //e
                                                         if let centerVertically = jsonData["centerVertically"] as? Bool {
                                                             if let centerHorizontally = jsonData["centerHorizontally"] as? Bool {
                                                                 
