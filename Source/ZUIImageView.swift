@@ -338,8 +338,8 @@ open class ZUIImageView: UIImageView {
                                                             
                                                             self.defaults.setValue(data, forKey: "\(configuration)_id\(appId).png")
                                                         }else {
+                                                            self.defaults.setValue(" ", forKey: "\(configuration)_id\(appId).png")
                                                             self.image = nil
-                                                            self.defaults.setValue(data, forKey: "")
                                                         }
                                                         
                                                     }

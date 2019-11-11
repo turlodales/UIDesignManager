@@ -145,7 +145,7 @@ open func configure(name: String, source: UIViewController, sourceParent: UIView
                             
                             if let json = dataString.data(using: String.Encoding.utf8){
                                 if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    self.defaults.setValue(jsonData, forKey: configuration) //puts the configurations in the user defaults as configuration
+                                    self.defaults.setValue(jsonData, forKey: configuration)
                                     if let status = jsonData["active"] as? Bool {
                                         if status == true {
                                             
@@ -230,6 +230,9 @@ open func configure(name: String, source: UIViewController, sourceParent: UIView
                                                     self.setBackgroundImage(UIImage(data: data!), for: .normal)
                                                       
                                                       self.defaults.setValue(data, forKey: "\(configuration)_id\(appId).png")
+                                                    }else {
+                                                        self.defaults.setValue(" ", forKey: "\(configuration)_id\(appId).png")
+                                                        self.setBackgroundImage(nil, for: .normal)
                                                     }
                                                 }
                                             }
