@@ -24,6 +24,15 @@ Constraints: set constraints programatically within the configure method. All pa
 
 NOTE: All updated UI parameters are saved on device which ensures smooth fast rendering.
 
+## Initial setup required
+
+```ruby
+# // AppDelegate.swift
+
+UIDesignManager.set(passKey: "CHOOSE_YOUR_OWN_PASSKEY")
+# You will need this to login into the UIDesigner app
+```
+
 ## UIView initialize full parameter setup:
 
 ```ruby
