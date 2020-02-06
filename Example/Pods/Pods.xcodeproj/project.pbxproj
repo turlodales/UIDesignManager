@@ -13,24 +13,24 @@
 		457FDD995A310EAA601DA3D2412D9468 /* Pods-UIDesignManager_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E55501042C94F86695DCD1A654DF5F95 /* Pods-UIDesignManager_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4A162F013B08C61B4A46603E2620A7D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
 		58C5E7745C1FCCF71331AB48C7C75159 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
-		9027F6DB2375FA4F002680D1 /* ZUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DA2375FA4F002680D1 /* ZUIButton.swift */; };
-		9027F6DC2375FA4F002680D1 /* ZUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DA2375FA4F002680D1 /* ZUIButton.swift */; };
-		9027F6DD2375FA4F002680D1 /* ZUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DA2375FA4F002680D1 /* ZUIButton.swift */; };
-		9027F6E22375FA71002680D1 /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DE2375FA70002680D1 /* ZUILabel.swift */; };
-		9027F6E32375FA71002680D1 /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DE2375FA70002680D1 /* ZUILabel.swift */; };
-		9027F6E42375FA71002680D1 /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DE2375FA70002680D1 /* ZUILabel.swift */; };
-		9027F6E52375FA71002680D1 /* ZUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DF2375FA70002680D1 /* ZUIView.swift */; };
-		9027F6E62375FA71002680D1 /* ZUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DF2375FA70002680D1 /* ZUIView.swift */; };
-		9027F6E72375FA71002680D1 /* ZUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6DF2375FA70002680D1 /* ZUIView.swift */; };
-		9027F6E82375FA71002680D1 /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6E02375FA71002680D1 /* ZUITextView.swift */; };
-		9027F6E92375FA71002680D1 /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6E02375FA71002680D1 /* ZUITextView.swift */; };
-		9027F6EA2375FA71002680D1 /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6E02375FA71002680D1 /* ZUITextView.swift */; };
-		9027F6EB2375FA71002680D1 /* ZUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6E12375FA71002680D1 /* ZUIImageView.swift */; };
-		9027F6EC2375FA71002680D1 /* ZUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6E12375FA71002680D1 /* ZUIImageView.swift */; };
-		9027F6ED2375FA71002680D1 /* ZUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6E12375FA71002680D1 /* ZUIImageView.swift */; };
-		9027F6EF2375FA8B002680D1 /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6EE2375FA8B002680D1 /* UIDesignManager.swift */; };
-		9027F6F02375FA8B002680D1 /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6EE2375FA8B002680D1 /* UIDesignManager.swift */; };
-		9027F6F12375FA8B002680D1 /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027F6EE2375FA8B002680D1 /* UIDesignManager.swift */; };
+		902C1F8223EC575E0065515E /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7C23EC575E0065515E /* ZUILabel.swift */; };
+		902C1F8323EC575E0065515E /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7C23EC575E0065515E /* ZUILabel.swift */; };
+		902C1F8423EC575E0065515E /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7C23EC575E0065515E /* ZUILabel.swift */; };
+		902C1F8523EC575E0065515E /* ZUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7D23EC575E0065515E /* ZUIImageView.swift */; };
+		902C1F8623EC575E0065515E /* ZUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7D23EC575E0065515E /* ZUIImageView.swift */; };
+		902C1F8723EC575E0065515E /* ZUIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7D23EC575E0065515E /* ZUIImageView.swift */; };
+		902C1F8823EC575E0065515E /* ZUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7E23EC575E0065515E /* ZUIButton.swift */; };
+		902C1F8923EC575E0065515E /* ZUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7E23EC575E0065515E /* ZUIButton.swift */; };
+		902C1F8A23EC575E0065515E /* ZUIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7E23EC575E0065515E /* ZUIButton.swift */; };
+		902C1F8B23EC575E0065515E /* ZUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7F23EC575E0065515E /* ZUIView.swift */; };
+		902C1F8C23EC575E0065515E /* ZUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7F23EC575E0065515E /* ZUIView.swift */; };
+		902C1F8D23EC575E0065515E /* ZUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F7F23EC575E0065515E /* ZUIView.swift */; };
+		902C1F8E23EC575E0065515E /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F8023EC575E0065515E /* UIDesignManager.swift */; };
+		902C1F8F23EC575E0065515E /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F8023EC575E0065515E /* UIDesignManager.swift */; };
+		902C1F9023EC575E0065515E /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F8023EC575E0065515E /* UIDesignManager.swift */; };
+		902C1F9123EC575E0065515E /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F8123EC575E0065515E /* ZUITextView.swift */; };
+		902C1F9223EC575E0065515E /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F8123EC575E0065515E /* ZUITextView.swift */; };
+		902C1F9323EC575E0065515E /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 902C1F8123EC575E0065515E /* ZUITextView.swift */; };
 		9A0B3D49B9B329E3E6396403B5444D3C /* Pods-UIDesignManager_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B5487F450DD84E86E2E93A001B3BF884 /* Pods-UIDesignManager_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A7CEB7D5BB47539557402E3B /* Pods_Pods_UIDesignManager_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 714E358FEA7A50F989810234 /* Pods_Pods_UIDesignManager_Example.framework */; };
 		B13A4324D6850E5F32324ABC /* Pods_Pods_UIDesignManager_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33110C0EDDF7F234D8A44605 /* Pods_Pods_UIDesignManager_Tests.framework */; };
@@ -80,12 +80,12 @@
 		740D7DDBA2B49933A8B110C1 /* Pods-Pods-UIDesignManager_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pods-UIDesignManager_Example.debug.xcconfig"; path = "Target Support Files/Pods-Pods-UIDesignManager_Example/Pods-Pods-UIDesignManager_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		7F15944187208D9819316E66E201B5BB /* Pods_UIDesignManager_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UIDesignManager_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83B4E454E5572A0244D1927ACFEF2DC1 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9027F6DA2375FA4F002680D1 /* ZUIButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUIButton.swift; sourceTree = "<group>"; };
-		9027F6DE2375FA70002680D1 /* ZUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUILabel.swift; sourceTree = "<group>"; };
-		9027F6DF2375FA70002680D1 /* ZUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUIView.swift; sourceTree = "<group>"; };
-		9027F6E02375FA71002680D1 /* ZUITextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUITextView.swift; sourceTree = "<group>"; };
-		9027F6E12375FA71002680D1 /* ZUIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUIImageView.swift; sourceTree = "<group>"; };
-		9027F6EE2375FA8B002680D1 /* UIDesignManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDesignManager.swift; sourceTree = "<group>"; };
+		902C1F7C23EC575E0065515E /* ZUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUILabel.swift; sourceTree = "<group>"; };
+		902C1F7D23EC575E0065515E /* ZUIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUIImageView.swift; sourceTree = "<group>"; };
+		902C1F7E23EC575E0065515E /* ZUIButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUIButton.swift; sourceTree = "<group>"; };
+		902C1F7F23EC575E0065515E /* ZUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUIView.swift; sourceTree = "<group>"; };
+		902C1F8023EC575E0065515E /* UIDesignManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDesignManager.swift; sourceTree = "<group>"; };
+		902C1F8123EC575E0065515E /* ZUITextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUITextView.swift; sourceTree = "<group>"; };
 		931A2AAF3F92004C2E9B122CAF502C6F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9D161CA0163ACF406BAB7DB4 /* Pods-Pods-UIDesignManager_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pods-UIDesignManager_Example.release.xcconfig"; path = "Target Support Files/Pods-Pods-UIDesignManager_Example/Pods-Pods-UIDesignManager_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -232,12 +232,12 @@
 		909D7B2522EBC32B0070AA03 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				9027F6EE2375FA8B002680D1 /* UIDesignManager.swift */,
-				9027F6DA2375FA4F002680D1 /* ZUIButton.swift */,
-				9027F6E12375FA71002680D1 /* ZUIImageView.swift */,
-				9027F6DE2375FA70002680D1 /* ZUILabel.swift */,
-				9027F6E02375FA71002680D1 /* ZUITextView.swift */,
-				9027F6DF2375FA70002680D1 /* ZUIView.swift */,
+				902C1F8023EC575E0065515E /* UIDesignManager.swift */,
+				902C1F7E23EC575E0065515E /* ZUIButton.swift */,
+				902C1F7D23EC575E0065515E /* ZUIImageView.swift */,
+				902C1F7C23EC575E0065515E /* ZUILabel.swift */,
+				902C1F8123EC575E0065515E /* ZUITextView.swift */,
+				902C1F7F23EC575E0065515E /* ZUIView.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -403,7 +403,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
+			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "_pods" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -521,13 +521,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9027F6DB2375FA4F002680D1 /* ZUIButton.swift in Sources */,
-				9027F6E82375FA71002680D1 /* ZUITextView.swift in Sources */,
 				B871AC496A41D3BEB7CDF4C6E3149DF0 /* Pods-UIDesignManager_Example-dummy.m in Sources */,
-				9027F6E22375FA71002680D1 /* ZUILabel.swift in Sources */,
-				9027F6EF2375FA8B002680D1 /* UIDesignManager.swift in Sources */,
-				9027F6E52375FA71002680D1 /* ZUIView.swift in Sources */,
-				9027F6EB2375FA71002680D1 /* ZUIImageView.swift in Sources */,
+				902C1F8223EC575E0065515E /* ZUILabel.swift in Sources */,
+				902C1F8823EC575E0065515E /* ZUIButton.swift in Sources */,
+				902C1F9123EC575E0065515E /* ZUITextView.swift in Sources */,
+				902C1F8523EC575E0065515E /* ZUIImageView.swift in Sources */,
+				902C1F8B23EC575E0065515E /* ZUIView.swift in Sources */,
+				902C1F8E23EC575E0065515E /* UIDesignManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -535,13 +535,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9027F6DD2375FA4F002680D1 /* ZUIButton.swift in Sources */,
-				9027F6EA2375FA71002680D1 /* ZUITextView.swift in Sources */,
 				235078136A91178AA92CD6659187689B /* UIDesignManager-dummy.m in Sources */,
-				9027F6E42375FA71002680D1 /* ZUILabel.swift in Sources */,
-				9027F6F12375FA8B002680D1 /* UIDesignManager.swift in Sources */,
-				9027F6E72375FA71002680D1 /* ZUIView.swift in Sources */,
-				9027F6ED2375FA71002680D1 /* ZUIImageView.swift in Sources */,
+				902C1F8423EC575E0065515E /* ZUILabel.swift in Sources */,
+				902C1F8A23EC575E0065515E /* ZUIButton.swift in Sources */,
+				902C1F9323EC575E0065515E /* ZUITextView.swift in Sources */,
+				902C1F8723EC575E0065515E /* ZUIImageView.swift in Sources */,
+				902C1F8D23EC575E0065515E /* ZUIView.swift in Sources */,
+				902C1F9023EC575E0065515E /* UIDesignManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,13 +549,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9027F6DC2375FA4F002680D1 /* ZUIButton.swift in Sources */,
-				9027F6E92375FA71002680D1 /* ZUITextView.swift in Sources */,
 				3941CF3F8773FA99B89DC25DC72777D6 /* Pods-UIDesignManager_Tests-dummy.m in Sources */,
-				9027F6E32375FA71002680D1 /* ZUILabel.swift in Sources */,
-				9027F6F02375FA8B002680D1 /* UIDesignManager.swift in Sources */,
-				9027F6E62375FA71002680D1 /* ZUIView.swift in Sources */,
-				9027F6EC2375FA71002680D1 /* ZUIImageView.swift in Sources */,
+				902C1F8323EC575E0065515E /* ZUILabel.swift in Sources */,
+				902C1F8923EC575E0065515E /* ZUIButton.swift in Sources */,
+				902C1F9223EC575E0065515E /* ZUITextView.swift in Sources */,
+				902C1F8623EC575E0065515E /* ZUIImageView.swift in Sources */,
+				902C1F8C23EC575E0065515E /* ZUIView.swift in Sources */,
+				902C1F8F23EC575E0065515E /* UIDesignManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -928,7 +928,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
+		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "_pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				50646285DD9FD95AF390BDA3FB1948EA /* Debug */,
