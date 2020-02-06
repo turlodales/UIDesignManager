@@ -14,16 +14,19 @@ open class ZUILabel: UILabel {
     var isHorizontallyCentred = false
     var isVerticallyCentred = false
     
+    
+    var inactiveBackgroundColorString = ""
+    var inactiveTextColorString = ""
+    var inactiveTextValue = ""
+    var inactiveTextAlignment = 0
+    var inactiveCornerRadius = 0
+    var inactiveFontName = ""
+    var inactiveFontSize = 0
+    
+    
     override init (frame : CGRect) {
         super.init(frame : frame)
         
-        if (self.layer.backgroundColor) == nil {
-            self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
-        }
-        
-        if (self.font.fontName) == ".SFUI-Regular" {
-            self.font = UIFont(name: "Avenir-Oblique", size: 12)
-        }
     }
     
     open func configure(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
@@ -38,6 +41,17 @@ open class ZUILabel: UILabel {
             self.font = UIFont(name: "Avenir-Oblique", size: self.font.pointSize)
         }
         
+        if (self.layer.backgroundColor) == nil {
+            self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
+        }
+        
+        inactiveBackgroundColorString = self.backgroundColor!.hexString(.d6)
+        inactiveTextColorString = self.textColor.hexString(.d6)
+        inactiveTextValue = self.text ?? ""
+        inactiveTextAlignment = self.textAlignment.rawValue
+        inactiveCornerRadius = Int(self.layer.cornerRadius)
+        inactiveFontName = self.font.fontName
+        inactiveFontSize = Int(self.font.pointSize)
         
         
         if let config = defaults.value(forKey: name) as? [String: Any] {
@@ -83,23 +97,21 @@ open class ZUILabel: UILabel {
                     }
                     
                     
-                    
-                    
-                    
                     if let vConstraints = config["vConstraints"] as? String {
                         if let hConstraints = config["hConstraints"] as? String {
                             DispatchQueue.main.async {
                                 self.translatesAutoresizingMaskIntoConstraints = false
+                                
                                 sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: hConstraints, options: [], metrics: nil, views: ["self":self]))
                                 sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: vConstraints, options: [], metrics: nil, views: ["self":self]))
                                 
-                                if let centerVertically = config["centerVertically"] as? Bool {
-                                    if let centerHorizontally = config["centerHorizontally"] as? Bool {
+                                if let centerVertically = config["centerVertically"] as? Int {
+                                    if let centerHorizontally = config["centerHorizontally"] as? Int {
                                         
-                                        if centerHorizontally == true {
+                                        if centerHorizontally == 1 {
                                             self.centerYAnchor.constraint(equalTo: sourceParent.centerYAnchor).isActive = true
                                         }
-                                        if centerVertically == true {
+                                        if centerVertically == 1 {
                                             self.centerXAnchor.constraint(equalTo: sourceParent.centerXAnchor).isActive = true
                                         }
                                     }
@@ -121,12 +133,11 @@ open class ZUILabel: UILabel {
         }
         
         
-        let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+        print("\(#line) \(url)")
         var request = URLRequest(url: url)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        let parameters = "appId=\(appId)&name=\(name)"
-        request.httpBody = parameters.data(using: .utf8)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error = error {
@@ -136,12 +147,17 @@ open class ZUILabel: UILabel {
                     print("statusCode: \(response.statusCode)")
                     
                     if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                        if dataString.contains("no data") == false {
-                            do {
+                        
+                        let data = dataString.data(using: .utf8)!
+                        do{
+                            let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                            
+                            if let dataObject = responseObject!["data"] as? [String : AnyObject]{
                                 
-                                if let json = dataString.data(using: String.Encoding.utf8){
-                                    if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                        self.defaults.setValue(jsonData, forKey: configuration) //puts the configurations in the user defaults as configuration
+                                if let components = dataObject["components"] as? NSArray{
+                                    if components.count != 0{
+                                        let jsonData = components[0] as! [String : AnyObject]
+                                        self.defaults.setValue(jsonData, forKey: configuration)
                                         if let status = jsonData["active"] as? Bool{
                                             if status == true {
                                                 if let fontName = jsonData["fontName"] as? String {
@@ -194,17 +210,19 @@ open class ZUILabel: UILabel {
                                                 if let vConstraints = jsonData["vConstraints"] as? String {
                                                     if let hConstraints = jsonData["hConstraints"] as? String {
                                                         DispatchQueue.main.async {
+                                                            self.removeAllConstraints()
+                                                            
                                                             self.translatesAutoresizingMaskIntoConstraints = false
                                                             sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: hConstraints, options: [], metrics: nil, views: ["self":self]))
                                                             sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: vConstraints, options: [], metrics: nil, views: ["self":self]))
                                                             
-                                                            if let centerVertically = jsonData["centerVertically"] as? Bool {
-                                                                if let centerHorizontally = jsonData["centerHorizontally"] as? Bool {
+                                                            if let centerVertically = jsonData["centerVertically"] as? Int {
+                                                                if let centerHorizontally = jsonData["centerHorizontally"] as? Int {
                                                                     
-                                                                    if centerHorizontally == true {
+                                                                    if centerHorizontally == 1 {
                                                                         self.centerYAnchor.constraint(equalTo: sourceParent.centerYAnchor).isActive = true
                                                                     }
-                                                                    if centerVertically == true {
+                                                                    if centerVertically == 1 {
                                                                         self.centerXAnchor.constraint(equalTo: sourceParent.centerXAnchor).isActive = true
                                                                     }
                                                                 }
@@ -216,86 +234,118 @@ open class ZUILabel: UILabel {
                                                 self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY)
                                             }
                                         }
+                                    }else if components.count == 0{
+                                        
+                                        DispatchQueue.main.async {
+                                            //uploads the initial config
+                                            var params = [String : AnyObject]()
+                                            
+                                            let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                            var request = URLRequest(url: url)
+                                            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                            request.httpMethod = "POST"
+                                            
+                                            let screen = String(describing: type(of: source))
+                                            let timestamp = NSDate().timeIntervalSince1970
+                                            var hConstraints = ""
+                                            var vConstraints = ""
+                                            var h1 = "H:"
+                                            var h2 = "[self]"
+                                            var h3 = ""
+                                            var v1 = "V:"
+                                            var v2 = "[self]"
+                                            var v3 = ""
+                                            if centerY == true {
+                                                v1 = "V:"
+                                                v2 = "[self(\(fixedHeight!))]"
+                                                v3 = ""
+                                                self.isHorizontallyCentred = true
+                                            }
+                                            
+                                            if centerX == true {
+                                                h1 = "H:"
+                                                h2 = "[self(\(fixedWidth!))]"
+                                                h3 = ""
+                                                self.isVerticallyCentred = true
+                                            }
+                                            
+                                            if top != nil { v1 = "V:|-\(top!)-" }
+                                            if bottom != nil { v3 = "-\(bottom!)-|" }
+                                            if right != nil { h3 = "-\(right!)-|" }
+                                            if left != nil { h1 = "H:|-\(left!)-" }
+                                            if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
+                                            if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
+                                            
+                                            hConstraints = h1 + h2 + h3
+                                            vConstraints = v1 + v2 + v3
+                                            
+                                            if (self.text) == nil {
+                                                self.text = "Hello."
+                                            }
+                                            
+                                            var textColorString = self.textColor?.hexString(.d6)
+                                            var textBgColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+                                            
+                                            if self.layer.backgroundColor == UIColor.clear.cgColor{
+                                                textBgColorString = "clear"
+                                            }
+                                            
+                                            if self.textColor == UIColor.clear{
+                                                textColorString = "clear"
+                                            }
+                                            
+                                            params["title_id"] = name as AnyObject
+                                            params["bundle_id"] = appId as AnyObject
+                                            params["fontName"] = self.font.fontName as AnyObject;
+                                            params["fontSize"] = self.font.pointSize as AnyObject
+                                            params["textValue"] = self.text as AnyObject;
+                                            params["bgColour"] = "" as AnyObject;
+                                            params["textColour"] = textColorString as AnyObject;
+                                            params["textBgColour"] = textBgColorString as AnyObject;
+                                            params["textAlignment"] = "\(self.textAlignment.rawValue)" as AnyObject;
+                                            params["hConstraints"] = hConstraints as AnyObject;
+                                            params["vConstraints"] = vConstraints as AnyObject;
+                                            params["color"] = "" as AnyObject;
+                                            params["cornerRadius"] = 0 as AnyObject;
+                                            params["type"] = "UILabel" as AnyObject;
+                                            params["source"] = screen as AnyObject;
+                                            params["timestamp"] = timestamp as AnyObject;
+                                            params["name"] = configuration as AnyObject;
+                                            params["contentMode"] = "" as AnyObject;
+                                            params["active"] = true as AnyObject;
+                                            params["centerHorizontally"] = self.isHorizontallyCentred as AnyObject;
+                                            params["centerVertically"] = self.isVerticallyCentred as AnyObject;
+                                            params["imagedata"] = "" as AnyObject;
+                                            
+                                            
+                                            request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                            
+                                            let session = URLSession.shared
+                                            let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                                print(response!)
+                                                do {
+                                                    _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                                } catch {
+                                                    print("error")
+                                                }
+                                            })
+                                            
+                                            self.defaults.setValue(params, forKey: name)
+                                            self.setInitial(sourceParent: sourceParent, json: params)
+                                            
+                                            task.resume()
+                                        }
                                     }
                                 }
-                                
-                            } catch {
-                                print(error.localizedDescription)
                             }
-                            
-                        } else if dataString.contains("no data"){
-                            DispatchQueue.main.async {
-                                //uploads the initial config
-                                let screen = String(describing: type(of: source))
-                                let timestamp = NSDate().timeIntervalSince1970
-                                var json = [String: Any]()
-                                var hConstraints = ""
-                                var vConstraints = ""
-                                var h1 = "H:"
-                                var h2 = "[self]"
-                                var h3 = ""
-                                var v1 = "V:"
-                                var v2 = "[self]"
-                                var v3 = ""
-                                if centerY == true {
-                                    v1 = "V:"
-                                    v2 = "[self(\(fixedHeight!))]"
-                                    v3 = ""
-                                    self.isHorizontallyCentred = true
-                                }
-                                
-                                if centerX == true {
-                                    h1 = "H:"
-                                    h2 = "[self(\(fixedWidth!))]"
-                                    h3 = ""
-                                    self.isVerticallyCentred = true
-                                }
-                                
-                                if top != nil { v1 = "V:|-\(top!)-" }
-                                if bottom != nil { v3 = "-\(bottom!)-|" }
-                                if right != nil { h3 = "-\(right!)-|" }
-                                if left != nil { h1 = "H:|-\(left!)-" }
-                                if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
-                                if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
-                                
-                                hConstraints = h1 + h2 + h3
-                                vConstraints = v1 + v2 + v3
-                                
-                                if (self.text) == nil {
-                                    self.text = "Hello."
-                                }
-                                
-                                var textColorString = self.textColor?.hexString(.d6)
-                                var textBgColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
-                                
-                                if self.layer.backgroundColor == UIColor.clear.cgColor{
-                                    textBgColorString = "clear"
-                                }
-                                
-                                if self.textColor == UIColor.clear{
-                                    textColorString = "clear"
-                                }
-                                
-                                
-                                
-                                json = ["fontName": self.font.fontName, "fontSize": self.font.pointSize, "textValue": self.text!, "textColour": textColorString!, "textBgColour": textBgColorString, "textAlignment" : "\(self.textAlignment.rawValue)", "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": 0, "type": "UILabel", "source":screen, "timestamp":timestamp, "name":configuration, "active" : true, "centerHorizontally" : self.isHorizontallyCentred, "centerVertically": self.isVerticallyCentred]
-                                
-                                let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                                
-                                self.defaults.setValue(jsonData, forKey: configuration)
-                                self.setInitial(sourceParent: sourceParent, json: json)
-                                self.uploadData(configuration: configuration, source: screen, type: "UILabel", json: json)
-                            }
+                        }catch {
+                            print(error.localizedDescription)
                         }
                     }
                 }
-                
-                
             }
         }
         task.resume()
-        
-        
     }
     
     func revertToStoryboardUI(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
@@ -340,22 +390,18 @@ open class ZUILabel: UILabel {
                 self.text = "Hello."
             }
             
-            let textColorString = self.textColor?.hexString(.d6)
-            let textBgColorString = UIColor(cgColor: self.layer.backgroundColor!).cgColor
             
             
             
             
-            json = [ "fontName": self.font.fontName, "fontSize": self.font.pointSize, "textValue": self.text!, "textColour": textColorString! , "textBgColour": textBgColorString, "textAlignment" : "\(self.textAlignment.rawValue)", "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": 0, "type": "UILabel", "source":screen, "timestamp":timestamp, "name":configuration, "active" : true, "centerHorizontally" : self.isHorizontallyCentred, "centerVertically": self.isVerticallyCentred]
+            json = [ "fontName": self.inactiveFontName, "fontSize": self.inactiveFontSize, "textValue": self.inactiveTextValue, "textColour": self.inactiveTextColorString , "textBgColour": self.inactiveBackgroundColorString, "textAlignment" : "\(self.inactiveTextAlignment)", "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.inactiveCornerRadius, "type": "UILabel", "source":screen, "timestamp":timestamp, "name":configuration, "active" : true, "centerHorizontally" : self.isHorizontallyCentred, "centerVertically": self.isVerticallyCentred]
             
             self.setInitial(sourceParent: sourceParent, json: json)
         }
     }
     
     func setInitial(sourceParent: UIView, json: [String: Any]) {
-        print("handling con")
         let config = json
-        
         
         if let cornerRadius = config["cornerRadius"] as? CGFloat {
             if cornerRadius > 0 {
@@ -417,6 +463,7 @@ open class ZUILabel: UILabel {
         }
         
         
+        //need to store an initial config in the user defaults
         
     }
     
@@ -428,7 +475,6 @@ open class ZUILabel: UILabel {
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         let parameters = "appId=\(appId)&name=\(configuration)&json=\(jsonString)"
-        print("code \(parameters)")
         request.httpBody = parameters.data(using: .utf8)
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
@@ -474,5 +520,3 @@ open class ZUILabel: UILabel {
         super.init(coder: aDecoder)
     }
 }
-
-

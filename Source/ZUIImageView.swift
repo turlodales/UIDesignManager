@@ -15,138 +15,17 @@ open class ZUIImageView: UIImageView {
     var isHorizontallyCentered = false
     var isVerticallyCentered = false
     
+    var inactiveBackgroundColorString = ""
+    var inactiveCornerRadius = 0
+    var inactiveImageString = ""
+    
     override init (frame : CGRect) {
         super.init(frame : frame)
-        
-        if (self.backgroundColor) == nil {
-            self.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue)
-        }
     }
     
-    func uploadImage(image: UIImage, name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
-        
-        print("uploading image")
-        
-        let configuration = name
-        
-        //save image to user defaults
-        
-        //if there exists an image, its png data saved to defaults
-        if let imageData = image.pngData(){
-            self.defaults.setValue(imageData, forKey: "\(configuration)_id\(appId).png")
-        }
-        
-        //UPLOADING THE IMAGE TO FIREBASE STORAGE
-        
-        let url = URL(string: "https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/images%2F+\(configuration)_id\(appId).png")
-        
-        // generate boundary string using a unique per-app string
-        let boundary = UUID().uuidString
-        
-        let session = URLSession.shared
-        
-        var path = ""
-        
-        // Set the URLRequest to POST and to the specified URL
-        var urlRequest = URLRequest(url: url!)
-        urlRequest.httpMethod = "POST"
-        
-        // Set Content-Type Header to multipart/form-data, this is equivalent to submitting form data with file upload in a web browser
-        // And the boundary is also set here
-        urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        
-        var data = Data()
-        
-        // Add the image data to the raw http request data
-        data.append("\r\n--\(boundary)\r\n".data(using: .utf8)!)
-        data.append("Content-Disposition: form-data; name=\"\(configuration)\"; filename=\"\(configuration)_id\(appId).png\"\r\n".data(using: .utf8)!)
-        
-        data.append("Content-Type: image/png\r\n\r\n".data(using: .utf8)!)
-        data.append(image.pngData()!)
-        
-        data.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
-        
-        // Send a POST request to the URL, with the data we created earlier
-        session.uploadTask(with: urlRequest, from: data, completionHandler: { responseData, response, error in
-            if error == nil {
-                let jsonData = try? JSONSerialization.jsonObject(with: responseData!, options: .allowFragments)
-                if let json = jsonData as? [String: Any] {
-                    print(json)
-                    
-                    if let token = json["downloadTokens"] as? String {
-                        
-                        //https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/
-                        
-                        path = token
-                        
-                        print("imagePath \(path)")
-                        
-                        DispatchQueue.main.async {
-                            //uploads the initial config, once the image is in firebase storage and the image data is stored in defaults
-                            
-                            let colorString = self.backgroundColor?.hexString(.d6)
-                            
-                            
-                            let contentMode = "Aspect Fill"
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            
-                            let screen = String(describing: type(of: source))
-                            var json = [String: Any]()
-                            var hConstraints = ""
-                            var vConstraints = ""
-                            var h1 = "H:"
-                            var h2 = "[self]"
-                            var h3 = ""
-                            var v1 = "V:"
-                            var v2 = "[self]"
-                            var v3 = ""
-                            
-                            if centerY == true {
-                                v1 = "V:"
-                                v2 = "[self(\(fixedHeight!))]"
-                                v3 = ""
-                                self.isHorizontallyCentered = true
-                            }
-                            
-                            if centerX == true {
-                                h1 = "H:"
-                                h2 = "[self(\(fixedWidth!))]"
-                                h3 = ""
-                                self.isVerticallyCentered = true
-                            }
-                            
-                            if top != nil { v1 = "V:|-\(top!)-" }
-                            if bottom != nil { v3 = "-\(bottom!)-|" }
-                            if right != nil { h3 = "-\(right!)-|" }
-                            if left != nil { h1 = "H:|-\(left!)-" }
-                            if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
-                            if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
-                            
-                            hConstraints = h1 + h2 + h3
-                            vConstraints = v1 + v2 + v3
-                            
-                            
-                            json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.layer.cornerRadius, "bgColour":colorString!, "contentMode": contentMode, "imageUrl" : path, "type": "UIImageView", "source":screen, "timestamp":timestamp, "name":configuration, "centerHorizontally": self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered, "active" : true]
-                            
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            
-                            //saves the config on firebase into defaults
-                            self.defaults.setValue(jsonData, forKey: configuration)
-                            self.setInitial(sourceParent: sourceParent, json: json)
-                            self.uploadData(configuration: configuration, source: screen, type: "UIImageViews", json: json)
-                        }
-                        
-                    }
-                    
-                }
-            } else {
-                print("image upload error \(error!)")
-            }
-        }).resume()
-        
-        
+    func convertBase64ToImage(imageString: String) -> UIImage {
+        let imageData = Data(base64Encoded: imageString, options: Data.Base64DecodingOptions.ignoreUnknownCharacters)!
+        return UIImage(data: imageData) ?? UIImage()
     }
     
     open func configure(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool, fallbackImage: String) {
@@ -158,17 +37,21 @@ open class ZUIImageView: UIImageView {
         }
         
         
-        
-        if let imgData = defaults.value(forKey: "\(name)_id\(appId).png") as? NSData {
-            DispatchQueue.main.async {
-                let loadedImage : UIImage = UIImage(data: imgData as Data)!
-                self.image = loadedImage
-                print("got image")
-            }
+        if (self.backgroundColor) == nil {
+            self.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue)
         }
         
+        inactiveBackgroundColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+        inactiveCornerRadius = Int(self.layer.cornerRadius)
+        inactiveImageString = (UIImage(named: fallbackImage)?.pngData()?.base64EncodedString(options: .lineLength64Characters))!
         
         
+        if let imageString = defaults.value(forKey: "\(name)_id\(appId).png") as? String {
+            DispatchQueue.main.async {
+                let image = self.convertBase64ToImage(imageString: imageString)
+                self.image = image
+            }
+        }
         
         if let config = defaults.value(forKey: name) as? [String: Any] {
             if let status = config["active"] as? Bool {
@@ -219,14 +102,11 @@ open class ZUIImageView: UIImageView {
                         }
                     }
                     
-                    
-                    
                     if let contentMode = config["contentMode"] as? String{
                         DispatchQueue.main.async {
                             if contentMode == "Scale to Fill"{
                                 self.contentMode = .scaleToFill
                             }
-                            
                             
                             if contentMode == "Aspect Fit"{
                                 self.contentMode = .scaleAspectFit
@@ -243,12 +123,10 @@ open class ZUIImageView: UIImageView {
             }
         }
         
-        let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
         var request = URLRequest(url: url)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        let parameters = "appId=\(appId)&name=\(name)"
-        request.httpBody = parameters.data(using: .utf8)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error = error {
@@ -258,12 +136,18 @@ open class ZUIImageView: UIImageView {
                     print("statusCode: \(response.statusCode)")
                     
                     if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                        if dataString.contains("no data") == false {
-                            do {
+                        
+                        let data = dataString.data(using: .utf8)!
+                        do{
+                            let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                            
+                            if let dataObject = responseObject!["data"] as? [String : AnyObject]{
                                 
-                                if let json = dataString.data(using: String.Encoding.utf8){
-                                    if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                        self.defaults.setValue(jsonData, forKey: configuration) //puts the configurations in the user defaults as configuration
+                                if let components = dataObject["components"] as? NSArray{
+                                    if components.count != 0{
+                                        let jsonData = components[0] as! [String : AnyObject]
+                                        self.defaults.setValue(jsonData, forKey: configuration)
+                                        
                                         if let status = jsonData["active"] as? Bool{
                                             if status == true {
                                                 
@@ -290,6 +174,8 @@ open class ZUIImageView: UIImageView {
                                                 if let vConstraints = jsonData["vConstraints"] as? String {
                                                     if let hConstraints = jsonData["hConstraints"] as? String {
                                                         DispatchQueue.main.async {
+                                                            self.removeAllConstraints()
+                                                            
                                                             self.translatesAutoresizingMaskIntoConstraints = false
                                                             sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: hConstraints, options: [], metrics: nil, views: ["self":self]))
                                                             sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: vConstraints, options: [], metrics: nil, views: ["self":self]))
@@ -327,68 +213,166 @@ open class ZUIImageView: UIImageView {
                                                 }
                                                 
                                                 
-                                                if let image = jsonData["imageUrl"] as? String{
+                                                if let imageurl = jsonData["imageurl"] as? String{
+                                                    
                                                     DispatchQueue.main.async {
-                                                        if image != ""{
-                                                            let imageUrl  = "https://firebasestorage.googleapis.com/v0/b/uidesignmanager.appspot.com/o/images%2F%20\(configuration)_id\(appId).png?alt=media&token=\(image)"
-                                                            let url = URL(string: imageUrl)
-                                                            let data = try? Data(contentsOf: url!)
-                                                            
-                                                            self.image = UIImage(data: data!)
-                                                            
-                                                            self.defaults.setValue(data, forKey: "\(configuration)_id\(appId).png")
-                                                        }else {
-                                                            self.defaults.setValue(" ", forKey: "\(configuration)_id\(appId).png")
+                                                        if let url = URL(string: imageurl) {
+                                                            do {
+                                                                let contents = try String(contentsOf: url)
+                                                                let image = self.convertBase64ToImage(imageString: contents)
+                                                                self.defaults.setValue(image.pngData()?.base64EncodedString(options: .lineLength64Characters), forKey: "\(configuration)_id\(appId).png")
+                                                                self.image = image
+                                                            } catch {
+                                                                // contents could not be loaded
+                                                                self.image = nil
+                                                                self.defaults.setValue(" ", forKey: "\(configuration)_id\(appId).png")
+                                                                
+                                                            }
+                                                        }else{
                                                             self.image = nil
+                                                            self.defaults.setValue(" ", forKey: "\(configuration)_id\(appId).png")
+                                                            
                                                         }
-                                                        
                                                     }
                                                 }
                                             }else {
                                                 self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY, imageName: fallbackImage)
                                             }
                                         }
+                                    }else if components.count == 0{
+                                        
+                                        self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY, imageName: fallbackImage) //sets the initial
+                                        
+                                        DispatchQueue.main.async {
+                                            //uploads the initial config
+                                            var params = [String : AnyObject]()
+                                            
+                                            let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                            var request = URLRequest(url: url)
+                                            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                            request.httpMethod = "POST"
+                                            
+                                            let screen = String(describing: type(of: source))
+                                            let timestamp = NSDate().timeIntervalSince1970
+                                            var hConstraints = ""
+                                            var vConstraints = ""
+                                            var h1 = "H:"
+                                            var h2 = "[self]"
+                                            var h3 = ""
+                                            var v1 = "V:"
+                                            var v2 = "[self]"
+                                            var v3 = ""
+                                            if centerY == true {
+                                                v1 = "V:"
+                                                v2 = "[self(\(fixedHeight!))]"
+                                                v3 = ""
+                                                self.isHorizontallyCentered = true
+                                            }
+                                            
+                                            if centerX == true {
+                                                h1 = "H:"
+                                                h2 = "[self(\(fixedWidth!))]"
+                                                h3 = ""
+                                                self.isVerticallyCentered = true
+                                            }
+                                            
+                                            if top != nil { v1 = "V:|-\(top!)-" }
+                                            if bottom != nil { v3 = "-\(bottom!)-|" }
+                                            if right != nil { h3 = "-\(right!)-|" }
+                                            if left != nil { h1 = "H:|-\(left!)-" }
+                                            if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
+                                            if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
+                                            
+                                            hConstraints = h1 + h2 + h3
+                                            vConstraints = v1 + v2 + v3
+                                            
+                                            if (self.image) == nil {
+                                                let image = UIImage(named: fallbackImage)
+                                                self.image = image
+                                                self.contentMode = .scaleAspectFill
+                                                self.clipsToBounds = true
+                                            }
+                                            
+                                            let imageInBase64 = self.image?.pngData()!.base64EncodedString(options: .lineLength64Characters)
+                                            
+                                            self.defaults.setValue(imageInBase64, forKey: "\(name)_id\(appId).png")
+                                            
+                                            params["title_id"] = name as AnyObject
+                                            params["bundle_id"] = appId as AnyObject
+                                            params["fontName"] = "" as AnyObject;
+                                            params["fontSize"] = 0 as AnyObject
+                                            params["bgColour"] = "" as AnyObject
+                                            params["textValue"] = "" as AnyObject;
+                                            params["textColour"] = "" as AnyObject;
+                                            params["textBgColour"] = "" as AnyObject;
+                                            params["textAlignment"] = 0 as AnyObject;
+                                            params["hConstraints"] = hConstraints as AnyObject;
+                                            params["vConstraints"] = vConstraints as AnyObject;
+                                            params["color"] = "" as AnyObject;
+                                            params["cornerRadius"] = 0 as AnyObject;
+                                            params["type"] = "UIImageView" as AnyObject;
+                                            params["source"] = screen as AnyObject;
+                                            params["timestamp"] = timestamp as AnyObject;
+                                            params["name"] = configuration as AnyObject;
+                                            params["contentMode"] = "Aspect Fill" as AnyObject;
+                                            params["active"] = true as AnyObject;
+                                            params["centerHorizontally"] = self.isHorizontallyCentered as AnyObject;
+                                            params["centerVertically"] = self.isVerticallyCentered as AnyObject;
+                                            params["imagedata"] = imageInBase64 as AnyObject;
+                                            
+                                            
+                                            request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                            
+                                            let session = URLSession.shared
+                                            let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                                print(response!)
+                                                do {
+                                                    _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                                } catch {
+                                                    print("error")
+                                                }
+                                            })
+                                            
+                                            
+                                            self.defaults.setValue(params, forKey: name)
+                                            
+                                            task.resume()
+                                        }
                                     }
+                                    
                                 }
-                                
-                            } catch {
-                                print(error.localizedDescription)
                             }
                             
-                        } else if dataString.contains("no data"){
-                            //initial config
-                            DispatchQueue.main.async {
-                                
-                                if (self.image) == nil {
-                                    let image = UIImage(named: fallbackImage)
-                                    self.image = image
-                                    self.contentMode = .scaleAspectFill
-                                    self.clipsToBounds = true
-                                }
-                                
-                                self.uploadImage(image: self.image!, name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY)
-                                self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY, imageName: fallbackImage)
-                            }
+                        }catch {
+                            print(error.localizedDescription)
                         }
+                        
                     }
                 }
             }
         }
         task.resume()
-        
     }
     
     func revertToStoryboardUI(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool, imageName: String) {
         DispatchQueue.main.async {
-            let colorString = self.backgroundColor?.hexString(.d6)
+            let colorString = self.inactiveBackgroundColorString
             
             
             let contentMode = "Aspect Fill"
             
             let timestamp = NSDate().timeIntervalSince1970
             
-            let data = self.image!.pngData()
-            self.defaults.setValue(data, forKey: "\(name)_id\(appId).png")
+            if (self.image) == nil {
+                let image = UIImage(named: imageName)
+                self.image = image
+                self.contentMode = .scaleAspectFill
+                self.clipsToBounds = true
+            }
+            
+            let imageString = self.inactiveImageString
+            self.defaults.setValue(imageString, forKey: "\(name)_id\(appId).png")
+            
             
             
             let screen = String(describing: type(of: source))
@@ -427,12 +411,10 @@ open class ZUIImageView: UIImageView {
             vConstraints = v1 + v2 + v3
             
             
-            json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.layer.cornerRadius, "bgColour":colorString!, "contentMode": contentMode, "imageName" : imageName, "type": "UIImageView", "source":screen, "timestamp":timestamp, "name":name, "centerHorizontally": self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered, "active" : true]
+            json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.inactiveCornerRadius, "bgColour":colorString, "contentMode": contentMode, "imageString" : self.inactiveImageString, "type": "UIImageView", "source":screen, "timestamp":timestamp, "name":name, "centerHorizontally": self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered, "active" : true]
             
-            print("2 \(json)")
-            
-            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-            self.defaults.setValue(jsonData, forKey: name)
+            _ = try? JSONSerialization.data(withJSONObject: json)
+            // self.defaults.setValue(jsonData, forKey: name)
             self.setInitial(sourceParent: sourceParent, json: json)
         }
     }
@@ -465,9 +447,9 @@ open class ZUIImageView: UIImageView {
         let config = json
         
         
-        if let fallbackImage = config["imageName"] as? String {
+        if let image = config["imageString"] as? String {
             DispatchQueue.main.async {
-                self.image = UIImage(named: fallbackImage)
+                self.image = self.convertBase64ToImage(imageString: image)
             }
         }
         
@@ -528,8 +510,6 @@ open class ZUIImageView: UIImageView {
     }
     
     func uploadData(configuration: String, source: String, type: String, json: [String: Any]) {
-        print("passed \(json)")
-        
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         let jsonStr = String(data: jsonData!, encoding: .utf8)!
         let jsonString = jsonStr.replacingOccurrences(of: "\\", with: "")

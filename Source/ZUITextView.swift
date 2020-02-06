@@ -14,12 +14,16 @@ open class ZUITextView: UITextView {
     var isVerticallyCentered = false
     var isHorizontallyCentered = false
     
+    var inactiveBackgroundColorString = ""
+    var inactiveTextColorString = ""
+    var inactiveTextValue = ""
+    var inactiveTextAlignment = 0
+    var inactiveCornerRadius = 0
+    var inactiveFontName = ""
+    var inactiveFontSize = 0
+    
     override init (frame : CGRect, textContainer: NSTextContainer?) {
         super.init(frame : frame, textContainer : nil)
-        
-        if (self.backgroundColor) == nil {
-            self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
-        }
         
     }
     
@@ -27,10 +31,22 @@ open class ZUITextView: UITextView {
         
         let configuration = name
         
+        if (self.backgroundColor) == nil {
+            self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
+        }
+        
+        inactiveBackgroundColorString = self.backgroundColor!.hexString(.d6)
+        inactiveTextColorString = self.textColor!.hexString(.d6)
+        inactiveTextValue = self.text ?? ""
+        inactiveTextAlignment = self.textAlignment.rawValue
+        inactiveCornerRadius = Int(self.layer.cornerRadius)
+        inactiveFontName = self.font?.fontName ?? ""
+        inactiveFontSize = 0
         
         if let config = defaults.value(forKey: name) as? [String: Any] {
             if let status = config["active"] as? Bool {
                 if status == true {
+                    
                     
                     if let fontName = config["fontName"] as? String {
                         if let fontSize = config["fontSize"] as? CGFloat {
@@ -94,12 +110,11 @@ open class ZUITextView: UITextView {
         }
         
         
-        let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+        print("\(#line) \(url)")
         var request = URLRequest(url: url)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        let parameters = "appId=\(appId)&name=\(name)"
-        request.httpBody = parameters.data(using: .utf8)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error = error {
@@ -109,15 +124,22 @@ open class ZUITextView: UITextView {
                     print("statusCode: \(response.statusCode)")
                     
                     if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                        if dataString.contains("no data") == false {
-                            do {
+                        
+                        let data = dataString.data(using: .utf8)!
+                        do{
+                            let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                            
+                            if let dataObject = responseObject!["data"] as? [String : AnyObject]{
                                 
-                                if let json = dataString.data(using: String.Encoding.utf8){
-                                    if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                        self.defaults.setValue(jsonData, forKey: configuration) //puts the configurations in the user defaults as configuration
+                                if let components = dataObject["components"] as? NSArray{
+                                    print("components are \(components)")
+                                    if components.count != 0{
+                                        let jsonData = components[0] as! [String : AnyObject]
+                                        self.defaults.setValue(jsonData, forKey: configuration)
+                                        
                                         if let status = jsonData["active"] as? Bool{
                                             if status == true {
-                                                
+                                                print("active is true")
                                                 if let fontName = jsonData["fontName"] as? String {
                                                     if let fontSize = jsonData["fontSize"] as? CGFloat {
                                                         DispatchQueue.main.async {
@@ -169,6 +191,8 @@ open class ZUITextView: UITextView {
                                                 if let vConstraints = jsonData["vConstraints"] as? String {
                                                     if let hConstraints = jsonData["hConstraints"] as? String {
                                                         DispatchQueue.main.async {
+                                                            self.removeAllConstraints()
+                                                            
                                                             self.translatesAutoresizingMaskIntoConstraints = false
                                                             sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: hConstraints, options: [], metrics: nil, views: ["self":self]))
                                                             sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: vConstraints, options: [], metrics: nil, views: ["self":self]))
@@ -187,98 +211,131 @@ open class ZUITextView: UITextView {
                                                         }
                                                     }
                                                 }
+                                            }else {
+                                                print("reverting ...0")
+                                                self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY)
                                             }
+                                            print("reverting ...1")
                                         }
+                                        print("reverting ...2")
+                                    }else if components.count == 0{
                                         
+                                        DispatchQueue.main.async {
+                                            //uploads the initial config
+                                            var params = [String : AnyObject]()
+                                            
+                                            let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                            var request = URLRequest(url: url)
+                                            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                            request.httpMethod = "POST"
+                                            
+                                            let screen = String(describing: type(of: source))
+                                            let timestamp = NSDate().timeIntervalSince1970
+                                            var hConstraints = ""
+                                            var vConstraints = ""
+                                            var h1 = "H:"
+                                            var h2 = "[self]"
+                                            var h3 = ""
+                                            var v1 = "V:"
+                                            var v2 = "[self]"
+                                            var v3 = ""
+                                            if centerY == true {
+                                                v1 = "V:"
+                                                v2 = "[self(\(fixedHeight!))]"
+                                                v3 = ""
+                                                self.isHorizontallyCentered = true
+                                            }
+                                            
+                                            if centerX == true {
+                                                h1 = "H:"
+                                                h2 = "[self(\(fixedWidth!))]"
+                                                h3 = ""
+                                                self.isVerticallyCentered = true
+                                            }
+                                            
+                                            if top != nil { v1 = "V:|-\(top!)-" }
+                                            if bottom != nil { v3 = "-\(bottom!)-|" }
+                                            if right != nil { h3 = "-\(right!)-|" }
+                                            if left != nil { h1 = "H:|-\(left!)-" }
+                                            if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
+                                            if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
+                                            
+                                            hConstraints = h1 + h2 + h3
+                                            vConstraints = v1 + v2 + v3
+                                            
+                                            if (self.text) == nil {
+                                                self.text = "Hello."
+                                            }
+                                            
+                                            var textColorString = self.textColor?.hexString(.d6)
+                                            var textBgColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+                                            
+                                            if self.layer.backgroundColor == UIColor.clear.cgColor{
+                                                textBgColorString = "clear"
+                                            }
+                                            
+                                            if self.textColor == UIColor.clear{
+                                                textColorString = "clear"
+                                            }
+                                            
+                                            params["title_id"] = name as AnyObject
+                                            params["bundle_id"] = appId as AnyObject
+                                            params["fontName"] = self.font!.fontName as AnyObject;
+                                            params["fontSize"] = self.font!.pointSize as AnyObject
+                                            params["textValue"] = self.text as AnyObject;
+                                            params["textColour"] = textColorString as AnyObject;
+                                            params["textBgColour"] = textBgColorString as AnyObject;
+                                            params["bgColour"] = "" as AnyObject;
+                                            params["textAlignment"] = "\(self.textAlignment.rawValue)" as AnyObject;
+                                            params["hConstraints"] = hConstraints as AnyObject;
+                                            params["vConstraints"] = vConstraints as AnyObject;
+                                            params["color"] = "" as AnyObject;
+                                            params["cornerRadius"] = 0 as AnyObject;
+                                            params["type"] = "UITextView" as AnyObject;
+                                            params["source"] = screen as AnyObject;
+                                            params["timestamp"] = timestamp as AnyObject;
+                                            params["name"] = configuration as AnyObject;
+                                            params["contentMode"] = "" as AnyObject;
+                                            params["active"] = true as AnyObject;
+                                            params["centerHorizontally"] = self.isHorizontallyCentered as AnyObject;
+                                            params["centerVertically"] = self.isVerticallyCentered as AnyObject;
+                                            params["imagedata"] = "" as AnyObject;
+                                            
+                                            
+                                            request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                            
+                                            let session = URLSession.shared
+                                            let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                                do {
+                                                    _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                                } catch {
+                                                    print("error")
+                                                }
+                                            })
+                                            
+                                            self.defaults.setValue(params, forKey: name)
+                                            self.setInitial(sourceParent: sourceParent, json: params)
+                                            
+                                            print("creatin new config")
+                                            
+                                            task.resume()
+                                        }
                                     }
                                 }
                                 
-                            } catch {
-                                print(error.localizedDescription)
                             }
                             
-                        } else if dataString.contains("no data") {
-                            DispatchQueue.main.async {
-                                //uploads the initial config
-                                
-                                let screen = String(describing: type(of: source))
-                                let timestamp = NSDate().timeIntervalSince1970
-                                var json = [String: Any]()
-                                var hConstraints = ""
-                                var vConstraints = ""
-                                var h1 = "H:"
-                                var h2 = "[self]"
-                                var h3 = ""
-                                var v1 = "V:"
-                                var v2 = "[self]"
-                                var v3 = ""
-                                if centerY == true {
-                                    v1 = "V:"
-                                    v2 = "[self(\(fixedHeight!))]"
-                                    v3 = ""
-                                    self.isHorizontallyCentered = true
-                                }
-                                
-                                if centerX == true {
-                                    h1 = "H:"
-                                    h2 = "[self(\(fixedWidth!))]"
-                                    h3 = ""
-                                    self.isVerticallyCentered = true
-                                }
-                                
-                                if top != nil { v1 = "V:|-\(top!)-" }
-                                if bottom != nil { v3 = "-\(bottom!)-|" }
-                                if right != nil { h3 = "-\(right!)-|" }
-                                if left != nil { h1 = "H:|-\(left!)-" }
-                                if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
-                                if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
-                                
-                                hConstraints = h1 + h2 + h3
-                                vConstraints = v1 + v2 + v3
-                                
-                                if (self.text) == nil {
-                                    self.text = "Hello."
-                                }
-                                
-                                if self.textColor == nil{
-                                    self.textColor = UIColor.red
-                                }
-                                
-                                
-                                
-                                
-                                var textColorString = self.textColor?.hexString(.d6)
-                                var textBgColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
-                                
-                                if self.layer.backgroundColor == UIColor.clear.cgColor{
-                                    textBgColorString = "clear"
-                                }
-                                
-                                if self.textColor == UIColor.clear{
-                                    textColorString = "clear"
-                                }
-                                
-                                
-                                
-                                
-                                
-                                json = ["fontName": self.font!.fontName, "fontSize": self.font!.pointSize, "textValue": self.text!, "textColour": textColorString!, "textBgColour": textBgColorString, "textAlignment" : "\(self.textAlignment.rawValue)", "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": 0, "type": "UITextView", "source":screen, "timestamp":timestamp, "name":configuration, "active" : true, "centerHorizontally" : self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered]
-                                
-                                let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                                
-                                self.defaults.setValue(jsonData, forKey: configuration)
-                                self.setInitial(sourceParent: sourceParent, json: json)
-                                self.uploadData(configuration: configuration, source: screen, type: "UIViews", json: json)
-                            }
+                        } catch {
+                            print(error.localizedDescription)
                         }
                     }
                 }
-                
-                
             }
         }
         task.resume()
     }
+    
+    
     
     func revertToStoryboardUI(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
         DispatchQueue.main.async {
@@ -322,11 +379,8 @@ open class ZUITextView: UITextView {
                 self.text = "Hello."
             }
             
-            let textColorString = self.textColor?.hexString(.d6)
-            let textBgColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
             
-            
-            json = ["fontName": self.font!.fontName, "fontSize": self.font!.pointSize, "textValue": self.text!, "textColour": textColorString!, "textBgColour": textBgColorString, "textAlignment" : "\(self.textAlignment.rawValue)", "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": 0, "type": "UITextView", "source":screen, "timestamp":timestamp, "name":configuration, "active" : true, "centerHorizontally" : self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered]
+            json = ["fontName": self.inactiveFontName, "fontSize": self.inactiveFontSize, "textValue": self.inactiveTextValue, "textColour": self.inactiveTextColorString, "textBgColour": self.inactiveBackgroundColorString, "textAlignment" : "\(self.inactiveTextAlignment)", "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.inactiveCornerRadius, "type": "UITextView", "source":screen, "timestamp":timestamp, "name":configuration, "active" : false, "centerHorizontally" : self.isHorizontallyCentered, "centerVertically": self.isVerticallyCentered]
             
             self.setInitial(sourceParent: sourceParent, json: json)
         }
@@ -335,6 +389,9 @@ open class ZUITextView: UITextView {
     func setInitial(sourceParent: UIView, json: [String: Any]) {
         print("handling con")
         let config = json
+        
+        
+        
         
         
         if let cornerRadius = config["cornerRadius"] as? CGFloat {
@@ -396,8 +453,6 @@ open class ZUITextView: UITextView {
             }
         }
         
-        
-        
     }
     
     func generateRandomPastelColor(withMixedColor mixColor: UIColor?) -> UIColor {
@@ -455,3 +510,6 @@ open class ZUITextView: UITextView {
         super.init(coder: aDecoder)
     }
 }
+
+
+

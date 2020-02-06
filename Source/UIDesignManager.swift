@@ -13,7 +13,6 @@ public func set(passKey: String) {
 }
 
 public var key = String()
-
 public var appId = String()
 
 extension String {
@@ -22,3 +21,11 @@ extension String {
         return self.filter {okayChars.contains($0) }
     }
 }
+
+extension UIImage{
+    open func convertImageToBase64(image: UIImage) -> String {
+        let imageData = image.jpegData(compressionQuality: 0.1)
+        return imageData!.base64EncodedString(options: Data.Base64EncodingOptions.lineLength64Characters)
+    }
+}
+

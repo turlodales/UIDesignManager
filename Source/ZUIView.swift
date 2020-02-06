@@ -14,21 +14,34 @@ open class ZUIView: UIView {
     var isHorizontallyCentred = false
     var isVerticallyCentred = false
     
+    var inactiveColourString = ""
+    var inactiveCornerRadius = 0
+    
+    
+    
     override init (frame : CGRect) {
         super.init(frame : frame)
         
-        if (self.layer.backgroundColor) == nil {
-            self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
-        }
     }
     
     open func configure(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
+        
+        print("\(#line) ran")
+        
         
         let configuration = name
         
         if (self.layer.backgroundColor) == nil {
             self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
         }
+        
+        if (self.layer.backgroundColor) == nil {
+            self.layer.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue).cgColor
+        }
+        
+        inactiveColourString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+        inactiveCornerRadius = Int(self.layer.cornerRadius)
+        
         
         if let config = defaults.value(forKey: name) as? [String: Any] {
             if let status = config["active"] as? Bool {
@@ -89,27 +102,35 @@ open class ZUIView: UIView {
             }
         }
         
-        let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+        
+        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+        print("\(#line) \(url)")
         var request = URLRequest(url: url)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        let parameters = "appId=\(appId)&name=\(name)"
-        request.httpBody = parameters.data(using: .utf8)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        
+        request.httpMethod = "GET"
+        
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if let error = error {
                 print("error: \(error)")
             } else {
                 if let response = response as? HTTPURLResponse {
-                    print("statusCode: \(response)")
+                    print("statusCode: \(response.statusCode)")
                     
                     if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                        if dataString.contains("no data") == false {
-                            do {
-                                
-                                
-                                if let json = dataString.data(using: String.Encoding.utf8){
-                                    if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
+                        
+                        let data = dataString.data(using: .utf8)!
+                        do{
+                            let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                            
+                            if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                                print("the datobject is \(dataObject)")
+                                if let components = dataObject["components"] as? NSArray{
+                                    
+                                    if components.count != 0{
+                                        let jsonData = components[0] as! [String : AnyObject]
                                         self.defaults.setValue(jsonData, forKey: configuration)
                                         if let status = jsonData["active"] as? Bool{
                                             if status == true {
@@ -155,84 +176,128 @@ open class ZUIView: UIView {
                                                         }
                                                     }
                                                 }
+                                            }else {
+                                                self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY)
                                             }
-                                        } else {
-                                            self.revertToStoryboardUI(name: name, source: source, sourceParent: sourceParent, left: left, right: right, top: top, bottom: bottom, fixedWidth: fixedWidth, fixedHeight: fixedHeight, centerX: centerX, centerY: centerY)
+                                        }
+                                    }else if components.count == 0{
+                                        DispatchQueue.main.async {
+                                            //uploads the initial config
+                                            var params = [String : AnyObject]()
+                                            
+                                            let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                            var request = URLRequest(url: url)
+                                            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                            
+                                            
+                                            request.httpMethod = "POST"
+                                            
+                                            let screen = String(describing: type(of: source))
+                                            let timestamp = NSDate().timeIntervalSince1970
+                                            var hConstraints = ""
+                                            var vConstraints = ""
+                                            var h1 = "H:"
+                                            var h2 = "[self]"
+                                            var h3 = ""
+                                            var v1 = "V:"
+                                            var v2 = "[self]"
+                                            var v3 = ""
+                                            if centerY == true {
+                                                v1 = "V:"
+                                                v2 = "[self(\(fixedHeight!))]"
+                                                v3 = ""
+                                                self.isHorizontallyCentred = true
+                                            }
+                                            
+                                            if centerX == true {
+                                                h1 = "H:"
+                                                h2 = "[self(\(fixedWidth!))]"
+                                                h3 = ""
+                                                self.isVerticallyCentred = true
+                                            }
+                                            
+                                            if top != nil { v1 = "V:|-\(top!)-" }
+                                            if bottom != nil { v3 = "-\(bottom!)-|" }
+                                            if right != nil { h3 = "-\(right!)-|" }
+                                            if left != nil { h1 = "H:|-\(left!)-" }
+                                            if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
+                                            if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
+                                            
+                                            hConstraints = h1 + h2 + h3
+                                            vConstraints = v1 + v2 + v3
+                                            
+                                            var bgColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+                                            
+                                            if self.layer.backgroundColor == UIColor.clear.cgColor{
+                                                bgColorString = "clear"
+                                            }
+                                            
+                                            
+                                            params["title_id"] = name as AnyObject
+                                            params["bundle_id"] = appId as AnyObject
+                                            params["fontName"] = "ff" as AnyObject;
+                                            params["fontSize"] = 0 as AnyObject
+                                            params["textValue"] = "ff" as AnyObject;
+                                            params["bgColour"] = bgColorString as AnyObject;
+                                            params["textColour"] = "ff" as AnyObject;
+                                            params["textBgColour"] = "ff" as AnyObject;
+                                            params["textAlignment"] = 0 as AnyObject;
+                                            params["hConstraints"] = hConstraints as AnyObject;
+                                            params["vConstraints"] = vConstraints as AnyObject;
+                                            params["color"] = "" as AnyObject;
+                                            params["cornerRadius"] = 0 as AnyObject;
+                                            params["type"] = "UIView" as AnyObject;
+                                            params["source"] = screen as AnyObject;
+                                            params["timestamp"] = timestamp as AnyObject;
+                                            params["name"] = configuration as AnyObject;
+                                            params["contentMode"] = "f" as AnyObject;
+                                            params["active"] = "1" as AnyObject;
+                                            params["centerHorizontally"] = self.isHorizontallyCentred as AnyObject;
+                                            params["centerVertically"] = self.isVerticallyCentred as AnyObject;
+                                            params["imagedata"] = "fff" as AnyObject;
+                                            
+                                            
+                                            request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                            
+                                            let session = URLSession.shared
+                                            let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                                print(response!)
+                                                do {
+                                                    let json = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                                    print("json data is \(json)")
+                                                } catch {
+                                                    print("error")
+                                                }
+                                            })
+                                            
+                                            print("params are \(params)")
+                                            
+                                            self.defaults.setValue(params, forKey: name)
+                                            self.setInitial(sourceParent: sourceParent, json: params)
+                                            
+                                            task.resume()
                                         }
                                     }
                                 }
-                                
-                            } catch {
-                                print(error.localizedDescription)
                             }
-                            
-                        } else if dataString.contains("no data") {
-                            DispatchQueue.main.async {
-                                //uploads the initial config
-                                
-                                print("initial uiview upload")
-                                
-                                let screen = String(describing: type(of: source))
-                                var colorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
-                                let timestamp = NSDate().timeIntervalSince1970
-                                var json = [String: Any]()
-                                var hConstraints = ""
-                                var vConstraints = ""
-                                var h1 = "H:"
-                                var h2 = "[self]"
-                                var h3 = ""
-                                var v1 = "V:"
-                                var v2 = "[self]"
-                                var v3 = ""
-                                if centerY == true {
-                                    v1 = "V:"
-                                    v2 = "[self(\(fixedHeight!))]"
-                                    v3 = ""
-                                    self.isHorizontallyCentred = true
-                                }
-                                
-                                if centerX == true {
-                                    h1 = "H:"
-                                    h2 = "[self(\(fixedWidth!))]"
-                                    h3 = ""
-                                    self.isVerticallyCentred = true
-                                }
-                                
-                                if self.layer.backgroundColor == UIColor.clear.cgColor{
-                                    colorString = "clear"
-                                }
-                                
-                                if top != nil { v1 = "V:|-\(top!)-" }
-                                if bottom != nil { v3 = "-\(bottom!)-|" }
-                                if right != nil { h3 = "-\(right!)-|" }
-                                if left != nil { h1 = "H:|-\(left!)-" }
-                                if fixedWidth != nil { h2 = "[self(\(fixedWidth!))]" }
-                                if fixedHeight != nil { v2 = "[self(\(fixedHeight!))]" }
-                                
-                                hConstraints = h1 + h2 + h3
-                                vConstraints = v1 + v2 + v3
-                                
-                                json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": 0, "bgColour":colorString, "type": "UIView", "source":screen, "timestamp":timestamp, "name":configuration, "centerHorizontally" : self.isHorizontallyCentred, "centerVertically" : self.isVerticallyCentred, "active" : true]
-                                
-                                let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                                self.defaults.setValue(jsonData, forKey: configuration)
-                                self.setInitial(sourceParent: sourceParent, json: json)
-                                self.uploadData(configuration: configuration, source: screen, type: "UIViews", json: json)
-                            }
+                        }catch {
+                            print(error.localizedDescription)
                         }
                     }
                 }
             }
+            
         }
-        
         task.resume()
     }
+    
+    
     
     func revertToStoryboardUI(name: String, source: UIViewController, sourceParent: UIView, left: CGFloat? = nil, right: CGFloat? = nil, top: CGFloat? = nil, bottom: CGFloat? = nil, fixedWidth: CGFloat? = nil, fixedHeight: CGFloat? = nil, centerX: Bool, centerY: Bool) {
         DispatchQueue.main.async {
             let screen = String(describing: type(of: source))
             let configuration = name
-            let colorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+            let colorString = self.inactiveColourString
             let timestamp = NSDate().timeIntervalSince1970
             var json = [String: Any]()
             var hConstraints = ""
@@ -267,7 +332,7 @@ open class ZUIView: UIView {
             hConstraints = h1 + h2 + h3
             vConstraints = v1 + v2 + v3
             
-            json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": 0, "bgColour":colorString, "type": "UIView", "source":screen, "timestamp":timestamp, "name":configuration, "centerHorizontally" : self.isHorizontallyCentred, "centerVertically" : self.isVerticallyCentred, "active" : true]
+            json = [ "hConstraints" : hConstraints, "vConstraints" : vConstraints, "cornerRadius": self.inactiveCornerRadius, "bgColour":colorString, "type": "UIView", "source":screen, "timestamp":timestamp, "name":configuration, "centerHorizontally" : self.isHorizontallyCentred, "centerVertically" : self.isVerticallyCentred, "active" : true]
             
             self.setInitial(sourceParent: sourceParent, json: json)
         }
@@ -278,6 +343,7 @@ open class ZUIView: UIView {
         let config = json
         if let bgColour = config["bgColour"] as? String {
             DispatchQueue.main.async {
+                print("handling con \(bgColour)")
                 self.layer.backgroundColor = hexStringToUIColor(hex: bgColour).cgColor
             }
         }
@@ -297,6 +363,8 @@ open class ZUIView: UIView {
                 
                 //handle center
                 DispatchQueue.main.async {
+                    self.removeAllConstraints()
+                    
                     self.translatesAutoresizingMaskIntoConstraints = false
                     sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: hConstraints, options: [], metrics: nil, views: ["self":self]))
                     sourceParent.addConstraints( NSLayoutConstraint.constraints(withVisualFormat: vConstraints, options: [], metrics: nil, views: ["self":self]))
@@ -501,24 +569,35 @@ public func setUIViewColor (name: String, source: UIViewController, initialColor
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
             print("error: \(error)")
         } else {
             if let response = response as? HTTPURLResponse {
+                print("statusCode: \(response.statusCode)")
+                
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false {
-                        do {
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
                                     if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
@@ -532,30 +611,80 @@ public func setUIViewColor (name: String, source: UIViewController, initialColor
                                             view.layer.backgroundColor = initialColor.cgColor
                                         }
                                     }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
+                                    }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.layer.backgroundColor = returnedColor.cgColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -577,21 +706,22 @@ public func setUIImageViewColor (name: String, source: UIViewController, initial
                 if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.backgroundColor = returnedColor
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
                 }
             }else{
-                view.backgroundColor = initialColor
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -601,48 +731,108 @@ public func setUIImageViewColor (name: String, source: UIViewController, initial
                 print("statusCode: \(response.statusCode)")
                 
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false{
-                        do {
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.backgroundColor = returnedColor
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.backgroundColor = initialColor
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.backgroundColor = returnedColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -659,26 +849,27 @@ public func setUIButtonBgColor (name: String, source: UIViewController, initialC
     var returnedColor = initialColor
     
     if let config = defaults.value(forKey: name) as? [String: Any] {
-        if let bgColour = config["color"] as? String {
-            if let status = config["active"] as? Bool {
-                if status == true {
+        if let status = config["active"] as? Bool {
+            if status == true {
+                if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.backgroundColor = returnedColor
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
-                }else{
-                    view.backgroundColor = initialColor
                 }
+            }else{
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -688,49 +879,108 @@ public func setUIButtonBgColor (name: String, source: UIViewController, initialC
                 print("statusCode: \(response.statusCode)")
                 
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false {
-                        do {
-                            
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.backgroundColor = returnedColor
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.backgroundColor = initialColor
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.backgroundColor = returnedColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -752,21 +1002,22 @@ public func setUIButtonTitleColor (name: String, source: UIViewController, initi
                 if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.setTitleColor(returnedColor, for: .normal)
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
                 }
             }else{
-                view.setTitleColor(initialColor, for: .normal)
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -776,49 +1027,108 @@ public func setUIButtonTitleColor (name: String, source: UIViewController, initi
                 print("statusCode: \(response.statusCode)")
                 
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false {
-                        do {
-                            
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.setTitleColor(returnedColor, for: .normal)
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.setTitleColor(initialColor, for: .normal)
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.setTitleColor(returnedColor, for: .normal)
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -840,21 +1150,22 @@ public func setUILabelBgColor (name: String, source: UIViewController, initialCo
                 if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.backgroundColor = returnedColor
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
                 }
             }else{
-                view.backgroundColor = initialColor
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -864,48 +1175,109 @@ public func setUILabelBgColor (name: String, source: UIViewController, initialCo
                 print("statusCode: \(response.statusCode)")
                 
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false {
-                        do {
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.backgroundColor = returnedColor
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.backgroundColor = initialColor
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.backgroundColor = returnedColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -927,21 +1299,22 @@ public func setUILabelTextColor (name: String, source: UIViewController, initial
                 if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.textColor = returnedColor
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
                 }
             }else{
-                view.textColor = initialColor
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -949,49 +1322,111 @@ public func setUILabelTextColor (name: String, source: UIViewController, initial
         } else {
             if let response = response as? HTTPURLResponse {
                 print("statusCode: \(response.statusCode)")
+                
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false {
-                        do {
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name)
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.textColor = returnedColor
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.textColor = initialColor
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.textColor = returnedColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -1013,21 +1448,22 @@ public func setUITextViewBgColor (name: String, source: UIViewController, initia
                 if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.backgroundColor = returnedColor
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
                 }
             }else{
-                view.backgroundColor = initialColor
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -1037,49 +1473,109 @@ public func setUITextViewBgColor (name: String, source: UIViewController, initia
                 print("statusCode: \(response.statusCode)")
                 
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false{
-                        do {
-                            
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.backgroundColor = returnedColor
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.backgroundColor = initialColor
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
+                                        let jsonData = try? JSONSerialization.data(withJSONObject: json)
+                                        
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        
+                                        defaults.setValue(jsonData, forKey: name)
+                                        
+                                        //uploadData(configuration: name, type: "UIColor", json: json)
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                _ = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.backgroundColor = returnedColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -1101,21 +1597,22 @@ public func setUITextViewTextColor (name: String, source: UIViewController, init
                 if let bgColour = config["color"] as? String {
                     DispatchQueue.main.async {
                         returnedColor = hexStringToUIColor(hex: bgColour)
-                        view.textColor = returnedColor
+                        view.layer.backgroundColor = returnedColor.cgColor
                     }
                 }
             }else{
-                view.textColor = initialColor
+                view.layer.backgroundColor = initialColor.cgColor
             }
         }
     }
     
-    let url = URL(string: "http://data.uidesignmanager.com/get.php")!
+    let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/getasset/id/\(name)/\(appId)")!
+    print("\(#line) \(url)")
     var request = URLRequest(url: url)
-    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "POST"
-    let parameters = "appId=\(appId)&name=\(name)"
-    request.httpBody = parameters.data(using: .utf8)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    
+    request.httpMethod = "GET"
     
     let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
         if let error = error {
@@ -1125,50 +1622,103 @@ public func setUITextViewTextColor (name: String, source: UIViewController, init
                 print("statusCode: \(response.statusCode)")
                 
                 if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                    if dataString.contains("no data") == false {
-                        do {
-                            
-                            if let json = dataString.data(using: String.Encoding.utf8){
-                                if let jsonData = try JSONSerialization.jsonObject(with: json, options: .allowFragments) as? [String:AnyObject]{
-                                    defaults.setValue(jsonData, forKey: name) //puts the configurations in the user defaults as configuration
-                                    
-                                    if let status = jsonData["active"] as? Bool {
+                    
+                    let data = dataString.data(using: .utf8)!
+                    do{
+                        let responseObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:AnyObject]
+                        
+                        if let dataObject = responseObject!["data"] as? [String : AnyObject]{
+                            print("to check no of comps \(dataObject)")
+                            if let components = dataObject["components"] as? NSArray{
+                                if components.count != 0{
+                                    var jsonData = components[0] as! [String : AnyObject]
+                                    jsonData["hConstraints"] = "" as AnyObject
+                                    jsonData["vConstraints"] = "" as AnyObject
+                                    UserDefaults.standard.setValue(jsonData, forKey: name)
+                                    if let status = jsonData["active"] as? Bool{
                                         if status == true {
                                             if let color = jsonData["color"] as? String{
                                                 DispatchQueue.main.async {
                                                     returnedColor = hexStringToUIColor(hex: color)
-                                                    view.textColor = returnedColor
                                                     
+                                                    view.layer.backgroundColor = returnedColor.cgColor
                                                 }
                                             }
                                         }else{
-                                            view.textColor = initialColor
+                                            view.layer.backgroundColor = initialColor.cgColor
                                         }
+                                    }
+                                } else if components.count == 0{
+                                    DispatchQueue.main.async {
+                                        //uploads the initial config
+                                        var params = [String : AnyObject]()
+                                        
+                                        let url = URL(string: "https://uidesignmanager.herokuapp.com/v1/assets")!
+                                        var request = URLRequest(url: url)
+                                        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                                        
+                                        
+                                        request.httpMethod = "POST"
+                                        
+                                        
+                                        
+                                        let colorString = initialColor.hexString(.d6)
+                                        
+                                        let timestamp = NSDate().timeIntervalSince1970
+                                        
+                                        
+                                        params["title_id"] = name as AnyObject
+                                        params["bundle_id"] = appId as AnyObject
+                                        params["fontName"] = "" as AnyObject;
+                                        params["fontSize"] = 0 as AnyObject
+                                        params["textValue"] = "" as AnyObject;
+                                        params["textColour"] = "" as AnyObject;
+                                        params["textBgColour"] = "" as AnyObject;
+                                        params["textAlignment"] = 0 as AnyObject;
+                                        //params["hConstraints"] = "" as AnyObject;
+                                        //params["vConstraints"] = "" as AnyObject;
+                                        params["color"] = colorString as AnyObject;
+                                        params["bgColour"] = "" as AnyObject;
+                                        params["cornerRadius"] = 0 as AnyObject;
+                                        params["type"] = "UIColor" as AnyObject;
+                                        params["source"] = "" as AnyObject;
+                                        params["timestamp"] = timestamp as AnyObject;
+                                        params["name"] = name as AnyObject;
+                                        params["contentMode"] = "" as AnyObject;
+                                        params["active"] = true as AnyObject;
+                                        params["centerHorizontally"] = false as AnyObject;
+                                        params["centerVertically"] = false as AnyObject;
+                                        params["imagedata"] = "" as AnyObject;
+                                        
+                                        
+                                        
+                                        returnedColor = initialColor
+                                        view.layer.backgroundColor = returnedColor.cgColor
+                                        
+                                        request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+                                        
+                                        let session = URLSession.shared
+                                        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+                                            do {
+                                                let json = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
+                                                print("color upload success \(json), \(params)")
+                                            } catch {
+                                                print("error")
+                                            }
+                                        })
+                                        
+                                        defaults.setValue(params, forKey: name)
+                                        //self.setInitial(sourceParent: sourceParent, json: params)
+                                        
+                                        task.resume()
                                     }
                                 }
                             }
                             
-                        } catch {
-                            print(error.localizedDescription)
                         }
                         
-                    } else if dataString.contains("no data"){
-                        DispatchQueue.main.async {
-                            //uploads the initial config
-                            
-                            let colorString = initialColor.hexString(.d6)
-                            
-                            let timestamp = NSDate().timeIntervalSince1970
-                            
-                            let json: [String: Any] = ["color":colorString, "timestamp":timestamp, "name":name, "type": "UIColor", "active" : true]
-                            let jsonData = try? JSONSerialization.data(withJSONObject: json)
-                            defaults.setValue(jsonData, forKey: name)
-                            
-                            uploadData(configuration: name, type: "UIColor", json: json)
-                            
-                            returnedColor = initialColor
-                            view.textColor = returnedColor
-                        }
+                    }catch {
+                        print(error.localizedDescription)
                     }
                 }
             }
@@ -1255,3 +1805,27 @@ extension UIView {
 
 
 
+extension UIView {
+    
+    public func removeAllConstraints() {
+        var _superview = self.superview
+        
+        while let superview = _superview {
+            for constraint in superview.constraints {
+                
+                if let first = constraint.firstItem as? UIView, first == self {
+                    superview.removeConstraint(constraint)
+                }
+                
+                if let second = constraint.secondItem as? UIView, second == self {
+                    superview.removeConstraint(constraint)
+                }
+            }
+            
+            _superview = superview.superview
+        }
+        
+        self.removeConstraints(self.constraints)
+        self.translatesAutoresizingMaskIntoConstraints = true
+    }
+}
