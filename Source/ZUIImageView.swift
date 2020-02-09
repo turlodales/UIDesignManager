@@ -32,16 +32,10 @@ open class ZUIImageView: UIImageView {
         
         let configuration = name
         
-        if (self.backgroundColor) == nil {
-            self.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue)
-        }
-        
-        
-        if (self.backgroundColor) == nil {
-            self.backgroundColor = generateRandomPastelColor(withMixedColor: UIColor.blue)
-        }
-        
+        if self.layer.backgroundColor != nil {
         inactiveBackgroundColorString = UIColor(cgColor: self.layer.backgroundColor!).hexString(.d6)
+        }
+        
         inactiveCornerRadius = Int(self.layer.cornerRadius)
         inactiveImageString = (UIImage(named: fallbackImage)?.pngData()?.base64EncodedString(options: .lineLength64Characters))!
         
