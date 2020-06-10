@@ -32,7 +32,6 @@
 		9077C7582490C55C00B4C30A /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C74E2490C55C00B4C30A /* UIDesignManager.swift */; };
 		9077C75A2490C55C00B4C30A /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C7502490C55C00B4C30A /* ZUITextView.swift */; };
 		9077C7612490C6F600B4C30A /* Z-SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */; };
-		9077C7622490C6F600B4C30A /* ZText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75E2490C6F600B4C30A /* ZText.swift */; };
 		9077C7632490C6F600B4C30A /* ZButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75F2490C6F600B4C30A /* ZButton.swift */; };
 		909051762490DD6200DE7556 /* ZText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909051742490DD6200DE7556 /* ZText.swift */; };
 		9A0B3D49B9B329E3E6396403B5444D3C /* Pods-UIDesignManager_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B5487F450DD84E86E2E93A001B3BF884 /* Pods-UIDesignManager_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -402,7 +401,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0930;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1150;
 				TargetAttributes = {
 					38CB753F30DDC7292F9885D3EB624662 = {
 						LastSwiftMigration = 1100;
@@ -562,7 +561,6 @@
 				9077C7582490C55C00B4C30A /* UIDesignManager.swift in Sources */,
 				9077C7562490C55C00B4C30A /* ZUIButton.swift in Sources */,
 				9077C7612490C6F600B4C30A /* Z-SwiftUI.swift in Sources */,
-				9077C7622490C6F600B4C30A /* ZText.swift in Sources */,
 				9077C7632490C6F600B4C30A /* ZButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

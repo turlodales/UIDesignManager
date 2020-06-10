@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'UIDesignManager'
-  s.version          = '0.2.6'
+  s.version          = '0.2.7'
   s.summary          = 'Manage your UI Remotely'
 
 # This description is used to generate tags and improve search results.
@@ -43,5 +43,6 @@ s.platforms = {
 
 # s.public_header_files = 'Pod/Source/**/*.h'
    s.frameworks = 'UIKit'
+   s.frameworks = 'SwiftUI'
    s.dependency 'Alamofire'
 end
