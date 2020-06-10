@@ -64,7 +64,7 @@ struct ContentView_Previews: PreviewProvider {
 
 ```
 # The code above will give you a SwiftUI Button as shown below.
-![alt text](https://zivato.com/public_html/apps/IMG_0025.PNG)
+![alt text](https://zivato.com/apps/IMG_0025.PNG)
 
 ## View initialize parameters:
 
