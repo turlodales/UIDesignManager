@@ -13,6 +13,9 @@
 		457FDD995A310EAA601DA3D2412D9468 /* Pods-UIDesignManager_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E55501042C94F86695DCD1A654DF5F95 /* Pods-UIDesignManager_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4A162F013B08C61B4A46603E2620A7D7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
 		58C5E7745C1FCCF71331AB48C7C75159 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6DFF15000AFE2A371BF499E7AFDA808 /* Foundation.framework */; };
+		9027A8D824914389002E169D /* ZView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027A8D524914389002E169D /* ZView.swift */; };
+		9027A8D924914389002E169D /* ZButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027A8D624914389002E169D /* ZButton.swift */; };
+		9027A8DA24914389002E169D /* ZText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9027A8D724914389002E169D /* ZText.swift */; };
 		902C1F9823EC5B8D0065515E /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 902C1F9523EC5B8D0065515E /* LICENSE */; };
 		902C1F9923EC5B8D0065515E /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 902C1F9523EC5B8D0065515E /* LICENSE */; };
 		902C1F9A23EC5B8D0065515E /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 902C1F9523EC5B8D0065515E /* LICENSE */; };
@@ -32,8 +35,6 @@
 		9077C7582490C55C00B4C30A /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C74E2490C55C00B4C30A /* UIDesignManager.swift */; };
 		9077C75A2490C55C00B4C30A /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C7502490C55C00B4C30A /* ZUITextView.swift */; };
 		9077C7612490C6F600B4C30A /* Z-SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */; };
-		9077C7632490C6F600B4C30A /* ZButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75F2490C6F600B4C30A /* ZButton.swift */; };
-		909051762490DD6200DE7556 /* ZText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909051742490DD6200DE7556 /* ZText.swift */; };
 		9A0B3D49B9B329E3E6396403B5444D3C /* Pods-UIDesignManager_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B5487F450DD84E86E2E93A001B3BF884 /* Pods-UIDesignManager_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A7CEB7D5BB47539557402E3B /* Pods_Pods_UIDesignManager_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 714E358FEA7A50F989810234 /* Pods_Pods_UIDesignManager_Example.framework */; };
 		B13A4324D6850E5F32324ABC /* Pods_Pods_UIDesignManager_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33110C0EDDF7F234D8A44605 /* Pods_Pods_UIDesignManager_Tests.framework */; };
@@ -81,6 +82,9 @@
 		740D7DDBA2B49933A8B110C1 /* Pods-Pods-UIDesignManager_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pods-UIDesignManager_Example.debug.xcconfig"; path = "Target Support Files/Pods-Pods-UIDesignManager_Example/Pods-Pods-UIDesignManager_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		7F15944187208D9819316E66E201B5BB /* Pods_UIDesignManager_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UIDesignManager_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		83B4E454E5572A0244D1927ACFEF2DC1 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9027A8D524914389002E169D /* ZView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ZView.swift; path = ../../../../../../TestApplication/Pods/UIDesignManager/Source/ZView.swift; sourceTree = "<group>"; };
+		9027A8D624914389002E169D /* ZButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZButton.swift; sourceTree = "<group>"; };
+		9027A8D724914389002E169D /* ZText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZText.swift; sourceTree = "<group>"; };
 		902C1F9523EC5B8D0065515E /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		902C1F9623EC5B8D0065515E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		902C1F9723EC5B8D0065515E /* UIDesignManager.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = UIDesignManager.podspec; sourceTree = "<group>"; };
@@ -92,9 +96,6 @@
 		9077C74E2490C55C00B4C30A /* UIDesignManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDesignManager.swift; sourceTree = "<group>"; };
 		9077C7502490C55C00B4C30A /* ZUITextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUITextView.swift; sourceTree = "<group>"; };
 		9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Z-SwiftUI.swift"; sourceTree = "<group>"; };
-		9077C75E2490C6F600B4C30A /* ZText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZText.swift; sourceTree = "<group>"; };
-		9077C75F2490C6F600B4C30A /* ZButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZButton.swift; sourceTree = "<group>"; };
-		909051742490DD6200DE7556 /* ZText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZText.swift; sourceTree = "<group>"; };
 		9D161CA0163ACF406BAB7DB4 /* Pods-Pods-UIDesignManager_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pods-UIDesignManager_Example.release.xcconfig"; path = "Target Support Files/Pods-Pods-UIDesignManager_Example/Pods-Pods-UIDesignManager_Example.release.xcconfig"; sourceTree = "<group>"; };
 		A026444B3EBEE82B7B4ECACE8BDED99C /* Pods_UIDesignManager_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UIDesignManager_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A47257CD79546512E12758B90F55A40B /* Pods-UIDesignManager_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-UIDesignManager_Example-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -246,9 +247,9 @@
 				9077C7502490C55C00B4C30A /* ZUITextView.swift */,
 				9077C7482490C55B00B4C30A /* ZUIView.swift */,
 				9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */,
-				9077C75F2490C6F600B4C30A /* ZButton.swift */,
-				909051742490DD6200DE7556 /* ZText.swift */,
-				9077C75E2490C6F600B4C30A /* ZText.swift */,
+				9027A8D624914389002E169D /* ZButton.swift */,
+				9027A8D724914389002E169D /* ZText.swift */,
+				9027A8D524914389002E169D /* ZView.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -554,14 +555,15 @@
 			files = (
 				235078136A91178AA92CD6659187689B /* UIDesignManager-dummy.m in Sources */,
 				9077C7522490C55C00B4C30A /* ZUIView.swift in Sources */,
-				909051762490DD6200DE7556 /* ZText.swift in Sources */,
 				9077C75A2490C55C00B4C30A /* ZUITextView.swift in Sources */,
 				9077C7532490C55C00B4C30A /* ZUIImageView.swift in Sources */,
+				9027A8D824914389002E169D /* ZView.swift in Sources */,
 				9077C7572490C55C00B4C30A /* ZUILabel.swift in Sources */,
+				9027A8D924914389002E169D /* ZButton.swift in Sources */,
 				9077C7582490C55C00B4C30A /* UIDesignManager.swift in Sources */,
 				9077C7562490C55C00B4C30A /* ZUIButton.swift in Sources */,
+				9027A8DA24914389002E169D /* ZText.swift in Sources */,
 				9077C7612490C6F600B4C30A /* Z-SwiftUI.swift in Sources */,
-				9077C7632490C6F600B4C30A /* ZButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
