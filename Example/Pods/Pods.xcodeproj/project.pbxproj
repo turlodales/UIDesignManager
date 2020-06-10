@@ -31,10 +31,10 @@
 		9077C7572490C55C00B4C30A /* ZUILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C74D2490C55C00B4C30A /* ZUILabel.swift */; };
 		9077C7582490C55C00B4C30A /* UIDesignManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C74E2490C55C00B4C30A /* UIDesignManager.swift */; };
 		9077C75A2490C55C00B4C30A /* ZUITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C7502490C55C00B4C30A /* ZUITextView.swift */; };
-		9077C7602490C6F600B4C30A /* ZView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75C2490C6F600B4C30A /* ZView.swift */; };
 		9077C7612490C6F600B4C30A /* Z-SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */; };
 		9077C7622490C6F600B4C30A /* ZText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75E2490C6F600B4C30A /* ZText.swift */; };
 		9077C7632490C6F600B4C30A /* ZButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9077C75F2490C6F600B4C30A /* ZButton.swift */; };
+		909051762490DD6200DE7556 /* ZText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909051742490DD6200DE7556 /* ZText.swift */; };
 		9A0B3D49B9B329E3E6396403B5444D3C /* Pods-UIDesignManager_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B5487F450DD84E86E2E93A001B3BF884 /* Pods-UIDesignManager_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A7CEB7D5BB47539557402E3B /* Pods_Pods_UIDesignManager_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 714E358FEA7A50F989810234 /* Pods_Pods_UIDesignManager_Example.framework */; };
 		B13A4324D6850E5F32324ABC /* Pods_Pods_UIDesignManager_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33110C0EDDF7F234D8A44605 /* Pods_Pods_UIDesignManager_Tests.framework */; };
@@ -92,10 +92,10 @@
 		9077C74D2490C55C00B4C30A /* ZUILabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUILabel.swift; sourceTree = "<group>"; };
 		9077C74E2490C55C00B4C30A /* UIDesignManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIDesignManager.swift; sourceTree = "<group>"; };
 		9077C7502490C55C00B4C30A /* ZUITextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZUITextView.swift; sourceTree = "<group>"; };
-		9077C75C2490C6F600B4C30A /* ZView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZView.swift; sourceTree = "<group>"; };
 		9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Z-SwiftUI.swift"; sourceTree = "<group>"; };
 		9077C75E2490C6F600B4C30A /* ZText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZText.swift; sourceTree = "<group>"; };
 		9077C75F2490C6F600B4C30A /* ZButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZButton.swift; sourceTree = "<group>"; };
+		909051742490DD6200DE7556 /* ZText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZText.swift; sourceTree = "<group>"; };
 		9D161CA0163ACF406BAB7DB4 /* Pods-Pods-UIDesignManager_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pods-UIDesignManager_Example.release.xcconfig"; path = "Target Support Files/Pods-Pods-UIDesignManager_Example/Pods-Pods-UIDesignManager_Example.release.xcconfig"; sourceTree = "<group>"; };
 		A026444B3EBEE82B7B4ECACE8BDED99C /* Pods_UIDesignManager_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UIDesignManager_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A47257CD79546512E12758B90F55A40B /* Pods-UIDesignManager_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-UIDesignManager_Example-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -248,8 +248,8 @@
 				9077C7482490C55B00B4C30A /* ZUIView.swift */,
 				9077C75D2490C6F600B4C30A /* Z-SwiftUI.swift */,
 				9077C75F2490C6F600B4C30A /* ZButton.swift */,
+				909051742490DD6200DE7556 /* ZText.swift */,
 				9077C75E2490C6F600B4C30A /* ZText.swift */,
-				9077C75C2490C6F600B4C30A /* ZView.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -555,8 +555,8 @@
 			files = (
 				235078136A91178AA92CD6659187689B /* UIDesignManager-dummy.m in Sources */,
 				9077C7522490C55C00B4C30A /* ZUIView.swift in Sources */,
+				909051762490DD6200DE7556 /* ZText.swift in Sources */,
 				9077C75A2490C55C00B4C30A /* ZUITextView.swift in Sources */,
-				9077C7602490C6F600B4C30A /* ZView.swift in Sources */,
 				9077C7532490C55C00B4C30A /* ZUIImageView.swift in Sources */,
 				9077C7572490C55C00B4C30A /* ZUILabel.swift in Sources */,
 				9077C7582490C55C00B4C30A /* UIDesignManager.swift in Sources */,
