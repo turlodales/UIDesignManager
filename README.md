@@ -64,6 +64,58 @@ struct ContentView_Previews: PreviewProvider {
 
 ```
 
+## View initialize parameters:
+
+```ruby
+import SwiftUI
+import UIDesignManager
+
+struct ContentView: View {
+    
+    var body: some View {
+        
+        HStack {
+        ZView(name: "red_circle", defaultBackgroundHex: "#FF0000", cornerRadius: 65, width: 130, height: 130)
+        }
+        
+    }
+    
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+```
+
+## Text initialize parameters:
+
+```ruby
+import SwiftUI
+import UIDesignManager
+
+struct ContentView: View {
+    
+    var body: some View {
+        
+        HStack {
+        ZText(name: "sample_text", text: "Hello World!", defaultBackgroundHex: "clear", defaultForegroundHex: "#FFFFFF", cornerRadius: 0, SFIcon: "", font: "Avenir-Light", fontSize: 25.0, width: 300.0, height: 50.0)
+        }
+        
+    }
+    
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+```
+
 
 
 ## UIKit
