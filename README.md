@@ -33,7 +33,7 @@ UIDesignManager.set(passKey: "CHOOSE_YOUR_OWN_PASSKEY")
 # You will need this to login into the UIDesigner app
 ```
 
-## SwiftUI
+# SwiftUI
 
 ## Button initialize parameters:
 
@@ -63,7 +63,7 @@ struct ContentView_Previews: PreviewProvider {
 }
 
 ```
-# The code above will give you a SwiftUI Button as shown below.
+## Image represents above code.
 ![alt text](https://zivato.com/apps/IMG_0025.PNG)
 
 ## View initialize parameters:
@@ -120,7 +120,7 @@ struct ContentView_Previews: PreviewProvider {
 
 
 
-## UIKit
+# UIKit
 
 ## UIView initialize full parameter setup:
 
