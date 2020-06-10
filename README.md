@@ -62,6 +62,10 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+![alt text](https://zivato.com/public_html/apps/IMG_0025.PNG)
+
+
+
 ```
 
 ## View initialize parameters:
