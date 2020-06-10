@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@available(iOS 13.0, *)
 struct ZButton: View {
 
     @State var name : String
@@ -84,6 +85,7 @@ func test() {
 }
 
 struct ZButton_Previews: PreviewProvider {
+    @available(iOS 13.0.0, *)
     static var previews: some View {
         ZButton(name: "sample", text: "Hello World", defaultBackgroundHex: "#FF0000", defaultForegroundHex: "#FFFFFF", cornerRadius: 5, SFIcon: "chevron.right", font: "Avenir-Medium", fontSize: 15.0, width: 100.0, height: 50.0, action: test, zParams: ZObject())
     }

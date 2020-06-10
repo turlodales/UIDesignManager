@@ -9,8 +9,6 @@
 import Foundation
 import SwiftUI
 
-public var key = String()
-public var appId = String()
 public var objectIds = [String]()
 
 extension Date {
@@ -19,6 +17,7 @@ extension Date {
     }
 }
 
+@available(iOS 13.0, *)
 class ZObject:ObservableObject {
     
     @Published var color = Color.clear
@@ -693,15 +692,7 @@ class ZObject:ObservableObject {
     
 
 
-
-
-extension String {
-    var validString: String {
-        let okayChars = Set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLKMNOPQRSTUVWXYZ1234567890")
-        return self.filter {okayChars.contains($0) }
-    }
-}
-
+@available(iOS 13.0, *)
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
