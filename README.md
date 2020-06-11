@@ -14,7 +14,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
-Integrate UIDesignManager with any Swift iOS application that is using UIKit. After your app runs for the first time your initial configurations will be saved and linked to our servers. To manage and control the properties of the individually configured UI components you will need to download the UIDesigner app from the app store. 
+Integrate UIDesignManager with any Swift iOS application that is using UIKit or SwiftUI. After your app runs for the first time your initial configurations will be saved and linked to our servers. To manage and control the properties of the individually configured UI components you will need to download the UIDesigner app from the app store. 
 
 ## Usage
 
@@ -32,6 +32,95 @@ NOTE: All updated UI parameters are saved on device which ensures smooth fast re
 UIDesignManager.set(passKey: "CHOOSE_YOUR_OWN_PASSKEY")
 # You will need this to login into the UIDesigner app
 ```
+
+# SwiftUI
+
+## Button initialize parameters:
+
+```ruby
+import SwiftUI
+import UIDesignManager
+
+struct ContentView: View {
+    
+    var body: some View {
+        
+        HStack {
+        ZButton(name: "like_button", text: "Like", defaultBackgroundHex: "#FF0000", defaultForegroundHex: "#FFFFFF", cornerRadius: 25.0, SFIcon: "heart.fill", font: "Avenir-Black", fontSize: 15.0, width: 100.0, height: 50.0, action: self.like)
+        }
+        
+    }
+    
+    func like() {
+        print("liked")
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+```
+## Image represents above code.
+![alt text](https://zivato.com/apps/IMG_0025.PNG)
+
+## View initialize parameters:
+
+```ruby
+import SwiftUI
+import UIDesignManager
+
+struct ContentView: View {
+    
+    var body: some View {
+        
+        HStack {
+        ZView(name: "red_circle", defaultBackgroundHex: "#FF0000", cornerRadius: 65, width: 130, height: 130)
+        }
+        
+    }
+    
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+```
+
+## Text initialize parameters:
+
+```ruby
+import SwiftUI
+import UIDesignManager
+
+struct ContentView: View {
+    
+    var body: some View {
+        
+        HStack {
+        ZText(name: "sample_text", text: "Hello World!", defaultBackgroundHex: "clear", defaultForegroundHex: "#FFFFFF", cornerRadius: 0, SFIcon: "", font: "Avenir-Light", fontSize: 25.0, width: 300.0, height: 50.0)
+        }
+        
+    }
+    
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+```
+
+
+
+# UIKit
 
 ## UIView initialize full parameter setup:
 
